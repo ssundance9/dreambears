@@ -1,0 +1,13 @@
+indexes:
+
+- kind: batter
+  ancestor: no
+  properties:
+  - name: Year
+  - name: Name
+
+- kind: pitcher
+  ancestor: no
+  properties:
+  - name: Year
+  - name: Name
