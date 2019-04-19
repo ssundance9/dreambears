@@ -1,7 +1,9 @@
 package com.dream.bears.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -49,7 +51,6 @@ public class StatServiceImpl implements StatService {
                 list.add(this.convertEntityToBatter(batters.next()));
             }
             
-            
             // 이름 중복 제거
             HashSet<String> set = new HashSet<String>();
             for (int i = 0; i < list.size(); i++) {
@@ -58,36 +59,37 @@ public class StatServiceImpl implements StatService {
             }
             
             // 합치기
-            while (set.iterator().hasNext()) {
-                String name = set.iterator().next();
+            Iterator<String> it = set.iterator();
+            while (it.hasNext()) {
+                String name = it.next();
                 BatterRecord sum = new BatterRecord();
                 
-                System.out.println(name);
-                
-//                for (int i = 0; i < list.size(); i++) {
-//                    BatterRecord batter = list.get(i);
-//                    if (name.equals(batter.getName())) {
-//                        sum.setGames(sum.getGames() + batter.getGames());
-//                        sum.setPlateAppears(sum.getPlateAppears() + batter.getPlateAppears());
-//                        sum.setAtBats(sum.getAtBats() + batter.getAtBats());
-//                        sum.setHits(sum.getHits() + batter.getHits());
-//                        sum.setSingles(sum.getSingles() + batter.getSingles());
-//                        sum.setDoubles(sum.getDoubles() + batter.getDoubles());
-//                        sum.setTriples(sum.getTriples() + batter.getTriples());
-//                        sum.setHomeRuns(sum.getHomeRuns() + batter.getHomeRuns());
-//                        sum.setRunsScored(sum.getRunsScored() + batter.getRunsScored());
-//                        sum.setRunsBattedIn(sum.getRunsBattedIn() + batter.getRunsBattedIn());
-//                        sum.setBasesOnBalls(sum.getBasesOnBalls() + batter.getBasesOnBalls());
-//                        sum.setStrikeOuts(sum.getStrikeOuts() + batter.getStrikeOuts());
-//                        sum.setStolenBases(sum.getStolenBases() + batter.getStolenBases());
-//                    }
-//                }
+                for (int i = 0; i < list.size(); i++) {
+                    BatterRecord batter = list.get(i);
+                    if (name.equals(batter.getName())) {
+                        sum.setName(name);
+                        sum.setGames(sum.getGames() + batter.getGames());
+                        sum.setPlateAppears(sum.getPlateAppears() + batter.getPlateAppears());
+                        sum.setAtBats(sum.getAtBats() + batter.getAtBats());
+                        sum.setHits(sum.getHits() + batter.getHits());
+                        sum.setSingles(sum.getSingles() + batter.getSingles());
+                        sum.setDoubles(sum.getDoubles() + batter.getDoubles());
+                        sum.setTriples(sum.getTriples() + batter.getTriples());
+                        sum.setHomeRuns(sum.getHomeRuns() + batter.getHomeRuns());
+                        sum.setRunsScored(sum.getRunsScored() + batter.getRunsScored());
+                        sum.setRunsBattedIn(sum.getRunsBattedIn() + batter.getRunsBattedIn());
+                        sum.setBasesOnBalls(sum.getBasesOnBalls() + batter.getBasesOnBalls());
+                        sum.setStrikeOuts(sum.getStrikeOuts() + batter.getStrikeOuts());
+                        sum.setStolenBases(sum.getStolenBases() + batter.getStolenBases());
+                    }
+                }
                 
                 result.add(sum);
             }
             
+            //Collections.sort(list, c);
+            
             return result;
-            //return list;
         } else {
             Query<Entity> query = Query.newEntityQueryBuilder()
                     .setKind(this.batter)
