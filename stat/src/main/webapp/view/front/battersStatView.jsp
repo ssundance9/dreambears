@@ -21,15 +21,14 @@ tr {
     text-align: right;
   }
 </style>
-<script type="text/javascript"  src="/js/jquery-3.4.0.min.js"></script>
-<script type="text/javascript"  src="/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/jquery-3.4.0.min.js"></script>
+<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/js/datatables.min.js"></script>
 <script type="text/javascript" src="/js/common.js"></script>
+
 <script type="text/javascript">
 jQuery(function($) {
-    $("#tabs").tabs({
-    	active: 1
-    });
+    $("#tabs").tabs();
     
     $("#table").DataTable({
     	paging: false,
@@ -43,13 +42,12 @@ jQuery(function($) {
         ]
     });
     
-	
-    $("#selectPitcherYear").on("change", function() {
-    	document.location.href="/pitchersStatView.do?year=" + $(this).val();
+    $("#selectBatterYear").on("change", function() {
+    	document.location.href = "/battersStatView.do?year=" + $(this).val();
     });
     
-    $("#goBatters").on("click", function() {
-    	document.location.href = "/battersStatView.do";
+    $("#goPitchers").on("click", function() {
+    	document.location.href = "/pitchersStatView.do";
     });
     
     $("#goTeam").on("click", function() {
@@ -61,18 +59,18 @@ jQuery(function($) {
     });
     
     $("#btnFilter").on("click", function() {
-    	var ip = "${ip}";
-    	if (ip == "40") {
-    		document.location.href = "/pitchersStatView.do?year=9999";
+    	var pa = "${pa}";
+    	if (pa == "200") {
+    		document.location.href = "/battersStatView.do?year=9999";
     	} else {
-    		document.location.href = "/pitchersStatView.do?year=9999&ip=40";
+    		document.location.href = "/battersStatView.do?year=9999&pa=200";
     	}
     });
     
-	adjustTable($("#tabs-2"));
+    adjustTable($("#tabs-1"));
     
     $(window).resize(function() {
-    	adjustTable($("#tabs-2"));
+    	adjustTable($("#tabs-1"));
     });
 })
 </script>
@@ -82,15 +80,13 @@ jQuery(function($) {
 <h2 id="title">DREAM BEARS STATS</h2>
 <div id="tabs">
     <ul>
-        <li><a href="#tabs-1" id="goBatters">타격</a></li>
-        <li><a href="#tabs-2">투구</a></li>
+        <li><a href="#tabs-1">타격</a></li>
+        <li><a href="#tabs-2" id="goPitchers">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
     </ul>
     <div id="tabs-1">
-    </div>
-    <div id="tabs-2">
         연도
-        <select name="year" id="selectPitcherYear">
+        <select name="year" id="selectBatterYear">
             <option value="9999" <c:if test="${year == 9999}">selected="selected"</c:if>>통산</option>
             <option value="2019" <c:if test="${year == 2019}">selected="selected"</c:if>>2019</option>
             <option value="2018" <c:if test="${year == 2018}">selected="selected"</c:if>>2018</option>
@@ -103,193 +99,228 @@ jQuery(function($) {
             <option value="2011" <c:if test="${year == 2011}">selected="selected"</c:if>>2011</option>
             <option value="2010" <c:if test="${year == 2010}">selected="selected"</c:if>>2010</option>
             <option value="2009" <c:if test="${year == 2009}">selected="selected"</c:if>>2009</option>
+            
         </select>
         
         <c:if test="${year == '9999' }">
-            <c:if test="${ip == '40' }">
-                <button id="btnFilter">모든 이닝</button>
+            <c:if test="${pa == '200' }">
+                <button id="btnFilter">모든 타석</button>
             </c:if>
-            <c:if test="${ip != '40' }">
-                <button id="btnFilter">40이닝 이상</button>
+            <c:if test="${pa != '200' }">
+                <button id="btnFilter">200타석 이상</button>
             </c:if>
         </c:if>
-        
         <br/>
         <br/>
         <table id="table" class="display">
             <thead>
                 <tr>
                     <th>Player</th>
-                    <th>W</th>
-                    <th>L</th>
-                    <th>SV</th>
-                    <th>IP</th>
+                    <th>G</th>
                     <th>PA</th>
                     <th>AB</th>
                     <th>H</th>
+                    <th>1B</th>
+                    <th>2B</th>
+                    <th>3B</th>
                     <th>HR</th>
-                    <th>SF</th>
+                    <th>R</th>
+                    <th>RBI</th>
                     <th>BB</th>
                     <th>SO</th>
-                    <th>R</th>
-                    <th>ER</th>
-                    <th>ERA</th>
+                    <th>SB</th>
                     <th>AVG</th>
-                    <th>WHIP</th>
-                    <th>FIP/IP</th>
+                    <th>OBP</th>
+                    <th>SLG</th>
+                    <th>OPS</th>
+                    <th>RC</th>
+                    <th>RC/21</th>
+                    <th>GPA</th>
+                    <th>BABIP</th>
                 </tr>
             </thead>
             <tbody>
-            <c:forEach var="pitcher" items="${list}" varStatus="vs">
-                <c:if test="${pitcher.name != 'TOTAL' }">
+            <c:forEach var="batter" items="${list}" varStatus="vs">
+                <c:if test="${batter.name != 'TOTAL' }">
                 <tr>
                     <th style="text-align: center;">
-                        <a href="/pitcherStatsView.do?name=${pitcher.name }">${pitcher.name }</a>
+                        <a href="/batterStatsView.do?name=${batter.name }">${batter.name }</a>
                     </th>
                     <td>
-                        ${pitcher.wins }
+                        ${batter.games }
                     </td>
                     <td>
-                        ${pitcher.losses }
+                        ${batter.plateAppears }
                     </td>
                     <td>
-                        ${pitcher.saves }
+                        ${batter.atBats }
                     </td>
                     <td>
-                        ${pitcher.inningsPitched }
+                        ${batter.hits }
                     </td>
                     <td>
-                        ${pitcher.plateAppears }
+                        ${batter.singles }
                     </td>
                     <td>
-                        ${pitcher.atBats }
+                        ${batter.doubles }
                     </td>
                     <td>
-                        ${pitcher.hits }
+                        ${batter.triples }
                     </td>
                     <td>
-                        ${pitcher.homeRuns }
+                        ${batter.homeRuns }
                     </td>
                     <td>
-                        ${pitcher.sacrificeFly }
+                        ${batter.runsScored }
                     </td>
                     <td>
-                        ${pitcher.basesOnBalls }
+                        ${batter.runsBattedIn }
                     </td>
                     <td>
-                        ${pitcher.strikeOuts }
+                        ${batter.basesOnBalls }
                     </td>
                     <td>
-                        ${pitcher.runs }
+                        ${batter.strikeOuts }
                     </td>
                     <td>
-                        ${pitcher.earnedRuns }
+                        ${batter.stolenBases }
                     </td>
                     <td>
-                        <fmt:formatNumber value="${pitcher.earnedRunAvg }" minFractionDigits="2" pattern=".##"/>
+                        <fmt:formatNumber value="${batter.battingAvg }" minFractionDigits="3" pattern=".###"/>
                     </td>
                     <td>
-                        <fmt:formatNumber value="${pitcher.battingAvg }" minFractionDigits="3"  pattern=".###"/>
+                        <fmt:formatNumber value="${batter.onBasePcg }" minFractionDigits="3"  pattern=".###"/>
                     </td>
                     <td>
-                        <fmt:formatNumber value="${pitcher.walksHitsIP }" minFractionDigits="2"  pattern=".##"/>
+                        <fmt:formatNumber value="${batter.sluggingPcg }" minFractionDigits="3"  pattern=".###"/>
                     </td>
                     <td>
-                        <fmt:formatNumber value="${pitcher.fieldingIndependentPitching }" minFractionDigits="2"  pattern=".##"/>
+                        <fmt:formatNumber value="${batter.onBasePlusSlugging }" minFractionDigits="3"  pattern=".###"/>
+                    </td>
+                    <td>
+                        <fmt:formatNumber value="${batter.runsCreated }" minFractionDigits="3"  pattern=".###"/>
+                    </td>
+                    <td>
+                        <fmt:formatNumber value="${batter.runsCreated21 }" minFractionDigits="3"  pattern=".###"/>
+                    </td>
+                    <td>
+                        <fmt:formatNumber value="${batter.grossProductionAvg }" minFractionDigits="3"  pattern=".###"/>
+                    </td>
+                    <td>
+                        <fmt:formatNumber value="${batter.battingAvgOnBIP }" minFractionDigits="3"  pattern=".###"/>
                     </td>
                 </tr>
                 </c:if>
             </c:forEach>
             </tbody>
             <tfoot>
-                <c:forEach var="pitcher" items="${list}" varStatus="vs">
-                <c:if test="${pitcher.name == 'TOTAL' }">
+                <c:forEach var="batter" items="${list}" varStatus="vs">
+                <c:if test="${batter.name == 'TOTAL' }">
                 <tr>
                     <th>
-                        <a href="/pitcherStatsView.do?name=${pitcher.name }">${pitcher.name }</a>
+                        <a href="/batterStatsView.do?name=${batter.name }">${batter.name }</a>
                     </th>
                     <td>
-                        ${pitcher.wins }
+                        -
                     </td>
                     <td>
-                        ${pitcher.losses }
+                        ${batter.plateAppears }
                     </td>
                     <td>
-                        ${pitcher.saves }
+                        ${batter.atBats }
                     </td>
                     <td>
-                        ${pitcher.inningsPitched }
+                        ${batter.hits }
                     </td>
                     <td>
-                        ${pitcher.plateAppears }
+                        ${batter.singles }
                     </td>
                     <td>
-                        ${pitcher.atBats }
+                        ${batter.doubles }
                     </td>
                     <td>
-                        ${pitcher.hits }
+                        ${batter.triples }
                     </td>
                     <td>
-                        ${pitcher.homeRuns }
+                        ${batter.homeRuns }
                     </td>
                     <td>
-                        ${pitcher.sacrificeFly }
+                        ${batter.runsScored }
                     </td>
                     <td>
-                        ${pitcher.basesOnBalls }
+                        ${batter.runsBattedIn }
                     </td>
                     <td>
-                        ${pitcher.strikeOuts }
+                        ${batter.basesOnBalls }
                     </td>
                     <td>
-                        ${pitcher.runs }
+                        ${batter.strikeOuts }
                     </td>
                     <td>
-                        ${pitcher.earnedRuns }
+                        ${batter.stolenBases }
                     </td>
                     <td>
-                        <fmt:formatNumber value="${pitcher.earnedRunAvg }" minFractionDigits="2" pattern=".##"/>
+                        <fmt:formatNumber value="${batter.battingAvg }" minFractionDigits="3" pattern=".###"/>
                     </td>
                     <td>
-                        <fmt:formatNumber value="${pitcher.battingAvg }" minFractionDigits="3"  pattern=".###"/>
+                        <fmt:formatNumber value="${batter.onBasePcg }" minFractionDigits="3"  pattern=".###"/>
                     </td>
                     <td>
-                        <fmt:formatNumber value="${pitcher.walksHitsIP }" minFractionDigits="2"  pattern=".##"/>
+                        <fmt:formatNumber value="${batter.sluggingPcg }" minFractionDigits="3"  pattern=".###"/>
                     </td>
                     <td>
-                        <fmt:formatNumber value="${pitcher.fieldingIndependentPitching }" minFractionDigits="2"  pattern=".##"/>
+                        <fmt:formatNumber value="${batter.onBasePlusSlugging }" minFractionDigits="3"  pattern=".###"/>
+                    </td>
+                    <td>
+                        <fmt:formatNumber value="${batter.runsCreated }" minFractionDigits="3"  pattern=".###"/>
+                    </td>
+                    <td>
+                        <fmt:formatNumber value="${batter.runsCreated21 }" minFractionDigits="3"  pattern=".###"/>
+                    </td>
+                    <td>
+                        <fmt:formatNumber value="${batter.grossProductionAvg }" minFractionDigits="3"  pattern=".###"/>
+                    </td>
+                    <td>
+                        <fmt:formatNumber value="${batter.battingAvgOnBIP }" minFractionDigits="3"  pattern=".###"/>
                     </td>
                 </tr>
                 </c:if>
                 </c:forEach>
                 <tr>
                     <th>Player</th>
-                    <th>W</th>
-                    <th>L</th>
-                    <th>SV</th>
-                    <th>IP</th>
+                    <th>G</th>
                     <th>PA</th>
                     <th>AB</th>
                     <th>H</th>
+                    <th>1B</th>
+                    <th>2B</th>
+                    <th>3B</th>
                     <th>HR</th>
-                    <th>SF</th>
+                    <th>R</th>
+                    <th>RBI</th>
                     <th>BB</th>
                     <th>SO</th>
-                    <th>R</th>
-                    <th>ER</th>
-                    <th>ERA</th>
+                    <th>SB</th>
                     <th>AVG</th>
-                    <th>WHIP</th>
-                    <th>FIP/IP</th>
+                    <th>OBP</th>
+                    <th>SLG</th>
+                    <th>OPS</th>
+                    <th>RC</th>
+                    <th>RC/21</th>
+                    <th>GPA</th>
+                    <th>BABIP</th>
                 </tr>
             </tfoot>
         </table>
+    </div>
+    <div id="tabs-2">
     </div>
     <div id="tabs-3">
     </div>
 </div>
 <br/>
-<a href="/battersStatView.do">DREAM BEARS STATS</a>
+
+<!-- <a href="/back/createRecordView.do">기록입력</a> -->
 
 </body>
 </html>

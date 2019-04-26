@@ -1,49 +1,49 @@
 package com.dream.bears.model;
 
 public class PitcherRecord {
-    private Long year;
+    private long year;
     
     private String name;
     
-    private Long wins;
+    private long wins;
     
-    private Long losses;
+    private long losses;
     
-    private Long saves;
+    private long saves;
     
-    private Double inningsPitched;
+    private double inningsPitched;
     
-    private Long plateAppears;
+    private long plateAppears;
     
-    private Long atBats;
+    private long atBats;
     
-    private Long hits;
+    private long hits;
     
-    private Long homeRuns;
+    private long homeRuns;
     
-    private Long sacrificeFly;
+    private long sacrificeFly;
     
-    private Long basesOnBalls;
+    private long basesOnBalls;
     
-    private Long strikeOuts;
+    private long strikeOuts;
     
-    private Long runs;
+    private long runs;
     
-    private Long earnedRuns;
+    private long earnedRuns;
     
-    private Double earnedRunAvg;
+    private double earnedRunAvg;
     
-    private Double battingAvg;
+    private double battingAvg;
     
-    private Double walksHitsIP;
+    private double walksHitsIP;
     
-    private Double fieldingIndependentPitching;
+    private double fieldingIndependentPitching;
 
-    public Long getYear() {
+    public long getYear() {
         return year;
     }
 
-    public void setYear(Long year) {
+    public void setYear(long year) {
         this.year = year;
     }
 
@@ -55,140 +55,141 @@ public class PitcherRecord {
         this.name = name;
     }
 
-    public Long getWins() {
+    public long getWins() {
         return wins;
     }
 
-    public void setWins(Long wins) {
+    public void setWins(long wins) {
         this.wins = wins;
     }
 
-    public Long getLosses() {
+    public long getLosses() {
         return losses;
     }
 
-    public void setLosses(Long losses) {
+    public void setLosses(long losses) {
         this.losses = losses;
     }
 
-    public Long getSaves() {
+    public long getSaves() {
         return saves;
     }
 
-    public void setSaves(Long saves) {
+    public void setSaves(long saves) {
         this.saves = saves;
     }
 
-    public Double getInningsPitched() {
-        return inningsPitched;
+    public double getInningsPitched() {
+        double a = inningsPitched * 10D;
+        return Math.round(a) / 10D;
     }
 
-    public void setInningsPitched(Double inningsPitched) {
+    public void setInningsPitched(double inningsPitched) {
         this.inningsPitched = inningsPitched;
     }
 
-    public Long getPlateAppears() {
+    public long getPlateAppears() {
         return plateAppears;
     }
 
-    public void setPlateAppears(Long plateAppears) {
+    public void setPlateAppears(long plateAppears) {
         this.plateAppears = plateAppears;
     }
 
-    public Long getAtBats() {
+    public long getAtBats() {
         return atBats;
     }
 
-    public void setAtBats(Long atBats) {
+    public void setAtBats(long atBats) {
         this.atBats = atBats;
     }
 
-    public Long getHits() {
+    public long getHits() {
         return hits;
     }
 
-    public void setHits(Long hits) {
+    public void setHits(long hits) {
         this.hits = hits;
     }
 
-    public Long getHomeRuns() {
+    public long getHomeRuns() {
         return homeRuns;
     }
 
-    public void setHomeRuns(Long homeRuns) {
+    public void setHomeRuns(long homeRuns) {
         this.homeRuns = homeRuns;
     }
 
-    public Long getSacrificeFly() {
+    public long getSacrificeFly() {
         return sacrificeFly;
     }
 
-    public void setSacrificeFly(Long sacrificeFly) {
+    public void setSacrificeFly(long sacrificeFly) {
         this.sacrificeFly = sacrificeFly;
     }
 
-    public Long getBasesOnBalls() {
+    public long getBasesOnBalls() {
         return basesOnBalls;
     }
 
-    public void setBasesOnBalls(Long basesOnBalls) {
+    public void setBasesOnBalls(long basesOnBalls) {
         this.basesOnBalls = basesOnBalls;
     }
 
-    public Long getStrikeOuts() {
+    public long getStrikeOuts() {
         return strikeOuts;
     }
 
-    public void setStrikeOuts(Long strikeOuts) {
+    public void setStrikeOuts(long strikeOuts) {
         this.strikeOuts = strikeOuts;
     }
 
-    public Long getRuns() {
+    public long getRuns() {
         return runs;
     }
 
-    public void setRuns(Long runs) {
+    public void setRuns(long runs) {
         this.runs = runs;
     }
 
-    public Long getEarnedRuns() {
+    public long getEarnedRuns() {
         return earnedRuns;
     }
 
-    public void setEarnedRuns(Long earnedRuns) {
+    public void setEarnedRuns(long earnedRuns) {
         this.earnedRuns = earnedRuns;
     }
 
-    public Double getEarnedRunAvg() {
+    public double getEarnedRunAvg() {
         if (this.inningsPitched > 0) {
-            Double a = ((double) this.earnedRuns) / ((double) this.inningsPitched) * 7D * 100D;
+            double a = ((double) this.earnedRuns) / ((double) this.inningsPitched) * 7D * 100D;
             return Math.round(a) / 100D;
         } else {
             return 0D;
         }
     }
 
-    public Double getBattingAvg() {
+    public double getBattingAvg() {
         if (this.atBats > 0) {
-            Double a = ((double) this.hits) / ((double) this.atBats) * 1000D;
+            double a = ((double) this.hits) / ((double) this.atBats) * 1000D;
             return Math.round(a) / 1000D;
         } else {
             return 0D;
         }
     }
 
-    public Double getWalksHitsIP() {
+    public double getWalksHitsIP() {
         if (this.inningsPitched > 0) {
-            Double a = (((double) this.hits) + ((double) this.basesOnBalls)) / ((double) this.inningsPitched) * 100D;
+            double a = (((double) this.hits) + ((double) this.basesOnBalls)) / ((double) this.inningsPitched) * 100D;
             return Math.round(a) / 100D;
         } else {
             return 0D;
         }
     }
     
-    public Double getFieldingIndependentPitching() {
+    public double getFieldingIndependentPitching() {
         if (this.inningsPitched > 0) {
-            Double a = ((13 * ((double) this.homeRuns) + 3 * ((double) this.basesOnBalls) - 2 * ((double) this.strikeOuts)) / ((double) this.inningsPitched) + 3.2D) * 100D;
+            double a = ((13 * ((double) this.homeRuns) + 3 * ((double) this.basesOnBalls) - 2 * ((double) this.strikeOuts)) / ((double) this.inningsPitched) + 3.2D) * 100D;
             return Math.round(a) / 100D;
         } else {
             return 0D;

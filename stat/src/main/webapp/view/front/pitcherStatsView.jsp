@@ -6,8 +6,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=0.8, minimum-scale=0.8">
 <title>Dream Bears Stats</title>
+<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=0.8, minimum-scale=0.8">
 <link rel="stylesheet" type="text/css" href="/css/jquery-ui.min.css">
 <link rel="stylesheet" type="text/css" href="/css/jquery-ui.theme.min.css">
 <!-- <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"> -->
@@ -28,48 +28,28 @@ tr {
 <script type="text/javascript">
 jQuery(function($) {
     $("#tabs").tabs({
-    	active: 1
+        active: 1
     });
     
     $("#table").DataTable({
-    	paging: false,
+		order: [[ 0, "desc" ]],
+		paging: false,
     	info: false,
     	searching: false,
     	fixedColumns: true,
     	scrollCollapse: true,
-    	scrollX: true,
-    	columnDefs: [
-            { width: 60, targets: 0 }
-        ]
+    	scrollX: true
     });
     
-	
-    $("#selectPitcherYear").on("change", function() {
-    	document.location.href="/pitchersStatView.do?year=" + $(this).val();
-    });
-    
-    $("#goBatters").on("click", function() {
-    	document.location.href = "/battersStatView.do";
-    });
-    
-    $("#goTeam").on("click", function() {
-    	document.location.href = "/teamStatsView.do";
+    $("#goBatter").on("click", function() {
+        document.location.href = "/batterStatsView.do?name=${param.name}";
     });
     
     $("#title").on("click", function() {
     	document.location.href = "/battersStatView.do";
     });
     
-    $("#btnFilter").on("click", function() {
-    	var ip = "${ip}";
-    	if (ip == "40") {
-    		document.location.href = "/pitchersStatView.do?year=9999";
-    	} else {
-    		document.location.href = "/pitchersStatView.do?year=9999&ip=40";
-    	}
-    });
-    
-	adjustTable($("#tabs-2"));
+    adjustTable($("#tabs-2"));
     
     $(window).resize(function() {
     	adjustTable($("#tabs-2"));
@@ -79,47 +59,19 @@ jQuery(function($) {
 </head>
 <body>
 
-<h2 id="title">DREAM BEARS STATS</h2>
+<h2><span id="title">DREAM BEARS STATS</span> - ${param.name }</h2>
 <div id="tabs">
     <ul>
-        <li><a href="#tabs-1" id="goBatters">타격</a></li>
+        <li><a href="#tabs-1" id="goBatter">타격</a></li>
         <li><a href="#tabs-2">투구</a></li>
-        <li><a href="#tabs-3" id="goTeam">팀</a></li>
     </ul>
     <div id="tabs-1">
     </div>
     <div id="tabs-2">
-        연도
-        <select name="year" id="selectPitcherYear">
-            <option value="9999" <c:if test="${year == 9999}">selected="selected"</c:if>>통산</option>
-            <option value="2019" <c:if test="${year == 2019}">selected="selected"</c:if>>2019</option>
-            <option value="2018" <c:if test="${year == 2018}">selected="selected"</c:if>>2018</option>
-            <option value="2017" <c:if test="${year == 2017}">selected="selected"</c:if>>2017</option>
-            <option value="2016" <c:if test="${year == 2016}">selected="selected"</c:if>>2016</option>
-            <option value="2015" <c:if test="${year == 2015}">selected="selected"</c:if>>2015</option>
-            <option value="2014" <c:if test="${year == 2014}">selected="selected"</c:if>>2014</option>
-            <option value="2013" <c:if test="${year == 2013}">selected="selected"</c:if>>2013</option>
-            <option value="2012" <c:if test="${year == 2012}">selected="selected"</c:if>>2012</option>
-            <option value="2011" <c:if test="${year == 2011}">selected="selected"</c:if>>2011</option>
-            <option value="2010" <c:if test="${year == 2010}">selected="selected"</c:if>>2010</option>
-            <option value="2009" <c:if test="${year == 2009}">selected="selected"</c:if>>2009</option>
-        </select>
-        
-        <c:if test="${year == '9999' }">
-            <c:if test="${ip == '40' }">
-                <button id="btnFilter">모든 이닝</button>
-            </c:if>
-            <c:if test="${ip != '40' }">
-                <button id="btnFilter">40이닝 이상</button>
-            </c:if>
-        </c:if>
-        
-        <br/>
-        <br/>
         <table id="table" class="display">
             <thead>
                 <tr>
-                    <th>Player</th>
+                    <th>Year</th>
                     <th>W</th>
                     <th>L</th>
                     <th>SV</th>
@@ -140,11 +92,11 @@ jQuery(function($) {
                 </tr>
             </thead>
             <tbody>
-            <c:forEach var="pitcher" items="${list}" varStatus="vs">
+            <c:forEach var="pitcher" items="${list}">
                 <c:if test="${pitcher.name != 'TOTAL' }">
                 <tr>
                     <th style="text-align: center;">
-                        <a href="/pitcherStatsView.do?name=${pitcher.name }">${pitcher.name }</a>
+                        ${pitcher.year }
                     </th>
                     <td>
                         ${pitcher.wins }
@@ -202,11 +154,11 @@ jQuery(function($) {
             </c:forEach>
             </tbody>
             <tfoot>
-                <c:forEach var="pitcher" items="${list}" varStatus="vs">
+                <c:forEach var="pitcher" items="${list}">
                 <c:if test="${pitcher.name == 'TOTAL' }">
                 <tr>
                     <th>
-                        <a href="/pitcherStatsView.do?name=${pitcher.name }">${pitcher.name }</a>
+                        ${pitcher.name }
                     </th>
                     <td>
                         ${pitcher.wins }
@@ -263,7 +215,7 @@ jQuery(function($) {
                 </c:if>
                 </c:forEach>
                 <tr>
-                    <th>Player</th>
+                    <th>Year</th>
                     <th>W</th>
                     <th>L</th>
                     <th>SV</th>
@@ -284,8 +236,6 @@ jQuery(function($) {
                 </tr>
             </tfoot>
         </table>
-    </div>
-    <div id="tabs-3">
     </div>
 </div>
 <br/>

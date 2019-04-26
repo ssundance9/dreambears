@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.dream.bears.model.BatterRecord;
 import com.dream.bears.model.PitcherRecord;
+import com.dream.bears.model.TeamRecord;
 import com.dream.bears.service.RecordService;
 
 @RequestMapping("back")
@@ -77,6 +78,30 @@ public class BackController {
             pr.setEarnedRuns(Long.parseLong(recordArray2[13]));
 
             this.recordService.createPitcherRecord(pr);
+        }
+        
+        return "redirect:/back/createRecordView.do";
+    }
+    
+    @RequestMapping(value = "/createTeamRecord")
+    public String createTeamRecord(ModelMap map, String recordStr) {
+        String[] recordArray1 = recordStr.split(",");
+        
+        for (int i = 0; i < recordArray1.length; i++) {
+            String rec = recordArray1[i];
+            String[] recordArray2 = rec.split(" ");
+            
+            TeamRecord tr = new TeamRecord();
+            tr.setYear(Long.parseLong(recordArray2[0].split("\\.")[0].trim()));
+            tr.setMonth(Long.parseLong(recordArray2[0].split("\\.")[1]));
+            tr.setDate(Long.parseLong(recordArray2[0].split("\\.")[2]));
+            tr.setBallPark(recordArray2[1]);
+            tr.setType(recordArray2[2]);
+            tr.setHomeAway(recordArray2[3]);
+            tr.setResult(recordArray2[4]);
+            tr.setOpponent(recordArray2[5]);
+
+            this.recordService.createTeamRecord(tr);
         }
         
         return "redirect:/back/createRecordView.do";

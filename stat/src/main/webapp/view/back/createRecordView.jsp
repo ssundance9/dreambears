@@ -7,7 +7,7 @@
 <link rel="stylesheet" type="text/css" href="/css/jquery-ui.min.css">
 <link rel="stylesheet" type="text/css" href="/css/jquery-ui.theme.min.css">
 <script type="text/javascript"  src="/js/jquery-3.4.0.min.js"></script>
-<script type="text/javascript"  src="/js/jquery-ui.js"></script>
+<script type="text/javascript"  src="/js/jquery-ui.min.js"></script>
 </head>
 <body>
 <form name="createForm" action="/back/createBatterRecord.do" method="post">
@@ -48,7 +48,11 @@
     <button type="submit">입력</button>
 </form>
 <br/>
+<form name="createForm" action="/back/createTeamRecord.do" method="post">
+    팀기록<textarea name="recordStr" rows="20" cols="50"></textarea>
+    <button type="submit">입력</button>
+</form>
+<br/>
 <a href="/main.do">메인</a>
-
 </body>
 </html>

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.dream.bears.model.BatterRecord;
 import com.dream.bears.model.PitcherRecord;
+import com.dream.bears.model.TeamRecord;
+import com.google.api.client.util.Lists;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.Entity;
@@ -18,12 +20,16 @@ import com.google.cloud.datastore.QueryResults;
 import com.google.cloud.datastore.StructuredQuery.CompositeFilter;
 import com.google.cloud.datastore.StructuredQuery.OrderBy;
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
 
 @Service
 public class StatServiceImpl implements StatService {
     Datastore datastore;
     final String batter = "batter";
     final String pitcher = "pitcher";
+    final String team = "team";
     
     public Datastore getDatastore() {
         if (this.datastore == null) {
@@ -34,17 +40,17 @@ public class StatServiceImpl implements StatService {
     }
     
     @Override
-    public List<BatterRecord> getBattersStatByYear(Long year) {
+    public List<BatterRecord> getBattersStatByYear(Long year, Long pa) {
         Datastore datastore = this.getDatastore();
         List<BatterRecord> list = new ArrayList<BatterRecord>();
+        List<BatterRecord> temp = new ArrayList<BatterRecord>();
         List<BatterRecord> result = new ArrayList<BatterRecord>();
         
-        if (year == 9999L) {
-            Query<Entity> query = Query.newEntityQueryBuilder()
-                    .setKind(this.batter)
-                    .setOrderBy(OrderBy.asc("Name"))
-                    .build();
-                
+        if (year == 9999L) { // 통산 기록
+            Query<Entity> query= Query.newEntityQueryBuilder()
+                .setKind(this.batter)
+                .build();
+            
             QueryResults<Entity> batters = datastore.run(query);
             
             while (batters.hasNext()) {
@@ -84,13 +90,34 @@ public class StatServiceImpl implements StatService {
                     }
                 }
                 
-                result.add(sum);
+                temp.add(sum);
             }
             
-            //Collections.sort(list, c);
+            if (pa == 200L) {
+                result = Lists.newArrayList(Iterables.filter(temp, new Predicate<BatterRecord>() {
+                    @Override
+
+                    public boolean apply(BatterRecord rec) {
+                        if (rec.getPlateAppears() >= 200L) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }));
+            } else {
+                result = temp;
+            }
             
-            return result;
-        } else {
+            // 정렬
+            Ordering<BatterRecord> byName = new Ordering<BatterRecord>() {
+                @Override
+                public int compare(BatterRecord left, BatterRecord right) {
+                    return left.getName().compareTo(right.getName());
+                }
+            };
+            Collections.sort(result, byName);
+        } else { // 단일 시즌 기록
             Query<Entity> query = Query.newEntityQueryBuilder()
                     .setKind(this.batter)
                     .setFilter(CompositeFilter.and(PropertyFilter.eq("Year", year)))
@@ -100,40 +127,114 @@ public class StatServiceImpl implements StatService {
             QueryResults<Entity> batters = datastore.run(query);
             
             while (batters.hasNext()) {
-                list.add(this.convertEntityToBatter(batters.next()));
+                result.add(this.convertEntityToBatter(batters.next()));
             }
-            
-            return list;
         }
         
+        // 합계
+        result = this.addTotalBatterRecord(result);
+        
+        return result;
     }
-    
     
     @Override
     public List<BatterRecord> getBatterStatsByName(String name) {
         Datastore datastore = this.getDatastore();
         List<BatterRecord> list = new ArrayList<BatterRecord>();
+        List<BatterRecord> result = new ArrayList<BatterRecord>();
       
         /*Key batterKey = datastore.newKeyFactory().setKind(this.batter).newKey(year + name);
         Entity retrieved = datastore.get(batterKey);
-      
         return this.convertEntityToBatter(retrieved);*/
         
-        
-        
-        Query<Entity> query = Query.newEntityQueryBuilder()
-            .setKind(this.batter)
-            .setFilter(CompositeFilter.and(PropertyFilter.eq("Name", name)
-                    //, PropertyFilter.ge("priority", 4)
-                    ))
-            .setOrderBy(OrderBy.asc("Year"))
-            .build();
+        if (!name.equals("TOTAL")) {
+            Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind(this.batter)
+                .setFilter(CompositeFilter.and(PropertyFilter.eq("Name", name)
+                        //, PropertyFilter.ge("priority", 4)
+                        ))
+                .setOrderBy(OrderBy.desc("Year"))
+                .build();
+                
+            QueryResults<Entity> stats = datastore.run(query);
             
-        QueryResults<Entity> stats = datastore.run(query);
-        
-        while(stats.hasNext()) {
-            list.add(this.convertEntityToBatter(stats.next()));
+            while(stats.hasNext()) {
+                result.add(this.convertEntityToBatter(stats.next()));
+            }
+        } else {
+            Query<Entity> query= Query.newEntityQueryBuilder()
+                .setKind(this.batter)
+                .build();
+            
+            QueryResults<Entity> batters = datastore.run(query);
+            
+            while (batters.hasNext()) {
+                list.add(this.convertEntityToBatter(batters.next()));
+            }
+                
+            // 연도 중복 제거
+            HashSet<Long> set = new HashSet<Long>();
+            for (int i = 0; i < list.size(); i++) {
+                BatterRecord batter = list.get(i);
+                set.add(batter.getYear());
+            }
+                
+            // 합치기
+            Iterator<Long> it = set.iterator();
+            while (it.hasNext()) {
+                long year = it.next();
+                BatterRecord sum = new BatterRecord();
+                
+                for (int i = 0; i < list.size(); i++) {
+                    BatterRecord batter = list.get(i);
+                    if (year == batter.getYear()) {
+                        sum.setYear(year);
+                        sum.setPlateAppears(sum.getPlateAppears() + batter.getPlateAppears());
+                        sum.setAtBats(sum.getAtBats() + batter.getAtBats());
+                        sum.setHits(sum.getHits() + batter.getHits());
+                        sum.setSingles(sum.getSingles() + batter.getSingles());
+                        sum.setDoubles(sum.getDoubles() + batter.getDoubles());
+                        sum.setTriples(sum.getTriples() + batter.getTriples());
+                        sum.setHomeRuns(sum.getHomeRuns() + batter.getHomeRuns());
+                        sum.setRunsScored(sum.getRunsScored() + batter.getRunsScored());
+                        sum.setRunsBattedIn(sum.getRunsBattedIn() + batter.getRunsBattedIn());
+                        sum.setBasesOnBalls(sum.getBasesOnBalls() + batter.getBasesOnBalls());
+                        sum.setStrikeOuts(sum.getStrikeOuts() + batter.getStrikeOuts());
+                        sum.setStolenBases(sum.getStolenBases() + batter.getStolenBases());
+                    }
+                }
+                
+                result.add(sum);
+            }
         }
+        
+        // 합계
+        result = this.addTotalBatterRecord(result);
+        
+        return result;
+    }
+    
+    private List<BatterRecord> addTotalBatterRecord(List<BatterRecord> list) {
+        BatterRecord total = new BatterRecord();
+        total.setName("TOTAL");
+        
+        for (BatterRecord rec : list) {
+            total.setPlateAppears(total.getPlateAppears() + rec.getPlateAppears());
+            total.setGames(total.getGames() + rec.getGames());
+            total.setAtBats(total.getAtBats() + rec.getAtBats());
+            total.setHits(total.getHits() + rec.getHits());
+            total.setSingles(total.getSingles() + rec.getSingles());
+            total.setDoubles(total.getDoubles() + rec.getDoubles());
+            total.setTriples(total.getTriples() + rec.getTriples());
+            total.setHomeRuns(total.getHomeRuns() + rec.getHomeRuns());
+            total.setRunsScored(total.getRunsScored() + rec.getRunsScored());
+            total.setRunsBattedIn(total.getRunsBattedIn() + rec.getRunsBattedIn());
+            total.setBasesOnBalls(total.getBasesOnBalls() + rec.getBasesOnBalls());
+            total.setStrikeOuts(total.getStrikeOuts() + rec.getStrikeOuts());
+            total.setStolenBases(total.getStolenBases() + rec.getStolenBases());
+        }
+        
+        list.add(total);
         
         return list;
     }
@@ -162,45 +263,198 @@ public class StatServiceImpl implements StatService {
     }
 
     @Override
-    public List<PitcherRecord> getPitchersStatByYear(Long year) {
+    public List<PitcherRecord> getPitchersStatByYear(Long year, Long ip) {
         Datastore datastore = this.getDatastore();
         List<PitcherRecord> list = new ArrayList<PitcherRecord>();
+        List<PitcherRecord> temp = new ArrayList<PitcherRecord>();
+        List<PitcherRecord> result = new ArrayList<PitcherRecord>();
         
-        Query<Entity> query = Query.newEntityQueryBuilder()
-            .setKind(this.pitcher)
-            .setFilter(CompositeFilter.and(PropertyFilter.eq("Year", year)
-                    //, PropertyFilter.ge("priority", 4)
-                    ))
-            .setOrderBy(OrderBy.asc("Name"))
-            .build();
-        
-        QueryResults<Entity> pitchers = datastore.run(query);
-        
-        while(pitchers.hasNext()) {
-            list.add(this.convertEntityToPitcher(pitchers.next()));
+        if (year == 9999L) { // 통산 기록
+            Query<Entity> query = Query.newEntityQueryBuilder()
+                    .setKind(this.pitcher)
+                    .build();
+                
+            QueryResults<Entity> pitchers = datastore.run(query);
+            
+            while (pitchers.hasNext()) {
+                list.add(this.convertEntityToPitcher(pitchers.next()));
+            }
+            
+            // 이름 중복 제거
+            HashSet<String> set = new HashSet<String>();
+            for (int i = 0; i < list.size(); i++) {
+                PitcherRecord pitcher = list.get(i);
+                set.add(pitcher.getName());
+            }
+            
+            // 합치기
+            Iterator<String> it = set.iterator();
+            while (it.hasNext()) {
+                String name = it.next();
+                PitcherRecord sum = new PitcherRecord();
+                
+                for (int i = 0; i < list.size(); i++) {
+                    PitcherRecord pitcher = list.get(i);
+                    if (name.equals(pitcher.getName())) {
+                        sum.setName(name);
+                        sum.setWins(sum.getWins() + pitcher.getWins());
+                        sum.setLosses(sum.getLosses() + pitcher.getLosses());
+                        sum.setSaves(sum.getSaves() + pitcher.getSaves());
+                        sum.setInningsPitched(sum.getInningsPitched() + pitcher.getInningsPitched());
+                        sum.setPlateAppears(sum.getPlateAppears() + pitcher.getPlateAppears());
+                        sum.setAtBats(sum.getAtBats() + pitcher.getAtBats());
+                        sum.setHits(sum.getHits() + pitcher.getHits());
+                        sum.setHomeRuns(sum.getHomeRuns() + pitcher.getHomeRuns());
+                        sum.setSacrificeFly(sum.getSacrificeFly() + pitcher.getSacrificeFly());
+                        sum.setBasesOnBalls(sum.getBasesOnBalls() + pitcher.getBasesOnBalls());
+                        sum.setStrikeOuts(sum.getStrikeOuts() + pitcher.getStrikeOuts());
+                        sum.setRuns(sum.getRuns() + pitcher.getRuns());
+                        sum.setEarnedRuns(sum.getEarnedRuns() + pitcher.getEarnedRuns());
+                    }
+                }
+                
+                temp.add(sum);
+            }
+            
+            if (ip == 40L) {
+                result = Lists.newArrayList(Iterables.filter(temp, new Predicate<PitcherRecord>() {
+                    @Override
+
+                    public boolean apply(PitcherRecord rec) {
+                        if (rec.getInningsPitched() >= 40L) {
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+                }));
+            } else {
+                result = temp;
+            }
+            
+            // 정렬
+            Ordering<PitcherRecord> byName = new Ordering<PitcherRecord>() {
+                @Override
+                public int compare(PitcherRecord left, PitcherRecord right) {
+                    return left.getName().compareTo(right.getName());
+                }
+            };
+            Collections.sort(result, byName);
+        } else { // 단일 시즌 기록
+            Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind(this.pitcher)
+                .setFilter(CompositeFilter.and(PropertyFilter.eq("Year", year)))
+                .setOrderBy(OrderBy.asc("Name"))
+                .build();
+            
+            QueryResults<Entity> pitchers = datastore.run(query);
+            
+            while(pitchers.hasNext()) {
+                result.add(this.convertEntityToPitcher(pitchers.next()));
+            }
         }
         
-        return list;
+        // 합계
+        result = this.addTotalPitcherRecord(result);
+        
+        return result;
     }
     
     @Override
     public List<PitcherRecord> getPitcherStatsByName(String name) {
         Datastore datastore = this.getDatastore();
         List<PitcherRecord> list = new ArrayList<PitcherRecord>();
+        List<PitcherRecord> result = new ArrayList<PitcherRecord>();
         
-        Query<Entity> query = Query.newEntityQueryBuilder()
-            .setKind(this.pitcher)
-            .setFilter(CompositeFilter.and(PropertyFilter.eq("Name", name)
-                    //, PropertyFilter.ge("priority", 4)
-                    ))
-            .setOrderBy(OrderBy.asc("Year"))
-            .build();
+        if (!name.equals("TOTAL")) {
+            Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind(this.pitcher)
+                .setFilter(CompositeFilter.and(PropertyFilter.eq("Name", name)
+                        //, PropertyFilter.ge("priority", 4)
+                        ))
+                .setOrderBy(OrderBy.desc("Year"))
+                .build();
+                
+            QueryResults<Entity> stats = datastore.run(query);
             
-        QueryResults<Entity> stats = datastore.run(query);
-        
-        while(stats.hasNext()) {
-            list.add(this.convertEntityToPitcher(stats.next()));
+            while(stats.hasNext()) {
+                result.add(this.convertEntityToPitcher(stats.next()));
+            }
+        } else {
+            Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind(this.pitcher)
+                .build();
+                
+            QueryResults<Entity> pitchers = datastore.run(query);
+            
+            while (pitchers.hasNext()) {
+                list.add(this.convertEntityToPitcher(pitchers.next()));
+            }
+            
+            // 연도 중복 제거
+            HashSet<Long> set = new HashSet<Long>();
+            for (int i = 0; i < list.size(); i++) {
+                PitcherRecord pitcher = list.get(i);
+                set.add(pitcher.getYear());
+            }
+            
+            // 합치기
+            Iterator<Long> it = set.iterator();
+            while (it.hasNext()) {
+                long year = it.next();
+                PitcherRecord sum = new PitcherRecord();
+                
+                for (int i = 0; i < list.size(); i++) {
+                    PitcherRecord pitcher = list.get(i);
+                    if (year == pitcher.getYear()) {
+                        sum.setYear(year);
+                        sum.setWins(sum.getWins() + pitcher.getWins());
+                        sum.setLosses(sum.getLosses() + pitcher.getLosses());
+                        sum.setSaves(sum.getSaves() + pitcher.getSaves());
+                        sum.setInningsPitched(sum.getInningsPitched() + pitcher.getInningsPitched());
+                        sum.setPlateAppears(sum.getPlateAppears() + pitcher.getPlateAppears());
+                        sum.setAtBats(sum.getAtBats() + pitcher.getAtBats());
+                        sum.setHits(sum.getHits() + pitcher.getHits());
+                        sum.setHomeRuns(sum.getHomeRuns() + pitcher.getHomeRuns());
+                        sum.setSacrificeFly(sum.getSacrificeFly() + pitcher.getSacrificeFly());
+                        sum.setBasesOnBalls(sum.getBasesOnBalls() + pitcher.getBasesOnBalls());
+                        sum.setStrikeOuts(sum.getStrikeOuts() + pitcher.getStrikeOuts());
+                        sum.setRuns(sum.getRuns() + pitcher.getRuns());
+                        sum.setEarnedRuns(sum.getEarnedRuns() + pitcher.getEarnedRuns());
+                    }
+                }
+                
+                result.add(sum);
+            }
         }
+        
+        // 합계
+        result = this.addTotalPitcherRecord(result);
+        
+        return result;
+    }
+    
+    private List<PitcherRecord> addTotalPitcherRecord(List<PitcherRecord> list) {
+        PitcherRecord total = new PitcherRecord();
+        total.setName("TOTAL");
+        
+        for (PitcherRecord rec : list) {
+            total.setWins(total.getWins() + rec.getWins());
+            total.setLosses(total.getLosses() + rec.getLosses());
+            total.setSaves(total.getSaves() + rec.getSaves());
+            total.setInningsPitched(total.getInningsPitched() + rec.getInningsPitched());
+            total.setPlateAppears(total.getPlateAppears() + rec.getPlateAppears());
+            total.setAtBats(total.getAtBats() + rec.getAtBats());
+            total.setHits(total.getHits() + rec.getHits());
+            total.setHomeRuns(total.getHomeRuns() + rec.getHomeRuns());
+            total.setSacrificeFly(total.getSacrificeFly() + rec.getSacrificeFly());
+            total.setBasesOnBalls(total.getBasesOnBalls() + rec.getBasesOnBalls());
+            total.setStrikeOuts(total.getStrikeOuts() + rec.getStrikeOuts());
+            total.setRuns(total.getRuns() + rec.getRuns());
+            total.setEarnedRuns(total.getEarnedRuns() + rec.getEarnedRuns());
+        }
+        
+        list.add(total);
         
         return list;
     }
@@ -227,4 +481,156 @@ public class StatServiceImpl implements StatService {
         return pitcher;
     }
 
+    @Override
+    public List<TeamRecord> getTeamStatsByYear(Long year) {
+        Datastore datastore = this.getDatastore();
+        List<TeamRecord> list = new ArrayList<TeamRecord>();
+        List<TeamRecord> result = new ArrayList<TeamRecord>();
+        
+        if (year == 9999L) { // 통산 기록
+            Query<Entity> query = Query.newEntityQueryBuilder()
+                    .setKind(this.team)
+                    .build();
+                
+            QueryResults<Entity> stats = datastore.run(query);
+            
+            while (stats.hasNext()) {
+                list.add(this.convertEntityToTeam(stats.next()));
+            }
+            
+            // 연도 중복 제거
+            HashSet<Long> set = new HashSet<Long>();
+            for (int i = 0; i < list.size(); i++) {
+                TeamRecord team = list.get(i);
+                set.add(team.getYear());
+            }
+            
+            // 합치기
+            Iterator<Long> it = set.iterator();
+            while (it.hasNext()) {
+                long yr = it.next();
+                TeamRecord sum = new TeamRecord();
+                
+                for (int i = 0; i < list.size(); i++) {
+                    TeamRecord team = list.get(i);
+                    if (yr == team.getYear()) {
+                        sum.setYear(yr);
+                        if (team.getResult().contains("승")) {
+                            sum.setWins(sum.getWins() + 1);
+                        }
+                        if (team.getResult().contains("무")) {
+                            sum.setDraws(sum.getDraws() + 1);
+                        }
+                        if (team.getResult().contains("패")) {
+                            sum.setLosses(sum.getLosses() + 1);
+                        }
+                    }
+                }
+                
+                result.add(sum);
+            }
+        } else {
+            Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind(this.team)
+                .setFilter(CompositeFilter.and(PropertyFilter.eq("Year", year)))
+                .setOrderBy(OrderBy.asc("Month"), OrderBy.asc("Date"))
+                .build();
+            
+            QueryResults<Entity> team = datastore.run(query);
+            
+            while(team.hasNext()) {
+                result.add(this.convertEntityToTeam(team.next()));
+            }
+        }
+
+        return result;
+    }
+    
+    private TeamRecord convertEntityToTeam(Entity entity) {
+        TeamRecord team = new TeamRecord();
+        
+        team.setYear(entity.getLong("Year"));
+        team.setMonth(entity.getLong("Month"));
+        team.setDate(entity.getLong("Date"));
+        team.setBallPark(entity.getString("BallPark"));
+        team.setType(entity.getString("Type"));
+        team.setHomeAway(entity.getString("HomeAway"));
+        team.setResult(entity.getString("Result"));
+        team.setOpponent(entity.getString("Opponent"));
+        
+        return team;
+    }
+
+    @Override
+    public List<TeamRecord> getTeamTotalStat() {
+        Datastore datastore = this.getDatastore();
+        List<TeamRecord> list = new ArrayList<TeamRecord>();
+        List<TeamRecord> result = new ArrayList<TeamRecord>();
+        
+        Query<Entity> query = Query.newEntityQueryBuilder()
+                .setKind(this.team)
+                .build();
+            
+        QueryResults<Entity> stats = datastore.run(query);
+        
+        while (stats.hasNext()) {
+            list.add(this.convertEntityToTeam(stats.next()));
+        }
+        
+        // 연도 중복 제거
+        HashSet<Long> set = new HashSet<Long>();
+        for (int i = 0; i < list.size(); i++) {
+            TeamRecord team = list.get(i);
+            set.add(team.getYear());
+        }
+        
+        // 합치기
+        Iterator<Long> it = set.iterator();
+        while (it.hasNext()) {
+            long yr = it.next();
+            TeamRecord sum = new TeamRecord();
+            
+            for (int i = 0; i < list.size(); i++) {
+                TeamRecord team = list.get(i);
+                if (yr == team.getYear()) {
+                    sum.setYear(yr);
+                    if (team.getResult().contains("승")) {
+                        sum.setWins(sum.getWins() + 1);
+                    }
+                    if (team.getResult().contains("무")) {
+                        sum.setDraws(sum.getDraws() + 1);
+                    }
+                    if (team.getResult().contains("패")) {
+                        sum.setLosses(sum.getLosses() + 1);
+                    }
+                    
+                    sum.setTotalGames(sum.getWins() + sum.getDraws() + sum.getLosses());
+                }
+            }
+            
+            result.add(sum);
+        }
+        
+       // 합계
+        result = this.addTotalTeamRecord(result);
+        
+        return result;
+    }
+    
+    private List<TeamRecord> addTotalTeamRecord(List<TeamRecord> list) {
+        TeamRecord total = new TeamRecord();
+        total.setYear(9999L);
+        
+        for (TeamRecord rec : list) {
+            total.setWins(total.getWins() + rec.getWins());
+            total.setLosses(total.getLosses() + rec.getLosses());
+            total.setDraws(total.getDraws() + rec.getDraws());
+            total.setTotalGames(total.getWins() + total.getDraws() + total.getLosses());
+
+        }
+        
+        list.add(total);
+        
+        return list;
+    }
 }

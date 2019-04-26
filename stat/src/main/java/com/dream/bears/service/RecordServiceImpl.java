@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.dream.bears.model.BatterRecord;
 import com.dream.bears.model.PitcherRecord;
+import com.dream.bears.model.TeamRecord;
 import com.google.cloud.datastore.Datastore;
 import com.google.cloud.datastore.DatastoreOptions;
 import com.google.cloud.datastore.Entity;
@@ -14,6 +15,7 @@ public class RecordServiceImpl implements RecordService {
     Datastore datastore;
     final String batter = "batter";
     final String pitcher = "pitcher";
+    final String team = "team";
     
     public Datastore getDatastore() {
         if (this.datastore == null) {
@@ -99,4 +101,34 @@ public class RecordServiceImpl implements RecordService {
         datastore.put(pitcherRecord);
     }
 
+    @Override
+    public void createTeamRecord(TeamRecord tr) {
+        // Instantiates a client
+        Datastore datastore = this.getDatastore();
+
+        // The kind for the new entity
+        //String batter = "batter";
+        // The name/ID for the new entity
+        //String name = br.getName();
+        // The Cloud Datastore key for the new entity
+        Key teamKey = datastore.newKeyFactory().setKind(this.team).newKey(String.valueOf(tr.getYear()) + String.valueOf(tr.getMonth()) + String.valueOf(tr.getDate()) + tr.getOpponent() + tr.getHomeAway());
+        
+        // 지우고 다시 저장
+        datastore.delete(teamKey);
+
+        // Prepares the new entity
+        Entity teamRecord = Entity.newBuilder(teamKey)
+            .set("Year", tr.getYear())
+            .set("Month", tr.getMonth())
+            .set("Date", tr.getDate())
+            .set("BallPark", tr.getBallPark())
+            .set("Type", tr.getType())
+            .set("HomeAway", tr.getHomeAway())
+            .set("Result", tr.getResult())
+            .set("Opponent", tr.getOpponent())
+            .build();
+
+        // Saves the entity
+        datastore.put(teamRecord);
+    }
 }

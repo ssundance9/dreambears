@@ -1,13 +1,29 @@
 indexes:
 
 - kind: batter
-  ancestor: no
   properties:
   - name: Year
   - name: Name
+  
+- kind: batter
+  properties:
+  - name: Name
+  - name: Year
+    direction: desc
 
 - kind: pitcher
-  ancestor: no
   properties:
   - name: Year
   - name: Name
+  
+- kind: pitcher
+  properties:
+  - name: Name
+  - name: Year
+    direction: desc
+    
+- kind: team
+  properties:
+  - name: Year
+  - name: Month
+  - name: Date
