@@ -108,7 +108,7 @@ public class BackController {
     }
     
     @RequestMapping(value = "/createBatterRecordByDate")
-    public String createBatterRecordByDate(ModelMap map, Long year, Long month, Long date, String recordStr) {
+    public String createBatterRecordByDate(ModelMap map, Long year, Long month, Long date, Long gameSeq, String recordStr) {
         String[] recordArray1 = recordStr.split("\\n");
         
         for (int i = 0; i < recordArray1.length; i++) {
@@ -122,6 +122,7 @@ public class BackController {
             br.setYear(year);
             br.setMonth(month);
             br.setDate(date);
+            br.setGameSeq(gameSeq);
             br.setName(recordArray2[0].trim());
             br.setPlateAppears(Long.parseLong(recordArray2[1]));
             
@@ -144,6 +145,40 @@ public class BackController {
             br.setStolenBases(Long.parseLong(recordArray2[12].trim()));
 
             this.recordService.createBatterRecordByDate(br);
+        }
+        
+        return "redirect:/back/createRecordView.do";
+    }
+    
+    @RequestMapping(value = "/createPitcherRecordByDate")
+    public String createPitcherRecordByDate(ModelMap map, Long year, Long month, Long date, Long gameSeq, String recordStr) {
+        String[] recordArray1 = recordStr.split("\\n");
+        
+        for (int i = 0; i < recordArray1.length; i++) {
+            String rec = recordArray1[i];
+            String[] recordArray2 = rec.split("\\t");
+            
+            PitcherRecord pr = new PitcherRecord();
+            pr.setYear(year);
+            pr.setMonth(month);
+            pr.setDate(date);
+            pr.setGameSeq(gameSeq);
+            pr.setName(recordArray2[0].trim());
+            pr.setWins(Long.parseLong(recordArray2[1]));
+            pr.setLosses(Long.parseLong(recordArray2[2]));
+            pr.setSaves(Long.parseLong(recordArray2[3]));
+            pr.setInningsPitched(Double.parseDouble(recordArray2[4]));
+            pr.setPlateAppears(Long.parseLong(recordArray2[5]));
+            pr.setAtBats(Long.parseLong(recordArray2[6]));
+            pr.setHits(Long.parseLong(recordArray2[7]));
+            pr.setHomeRuns(Long.parseLong(recordArray2[8]));
+            pr.setSacrificeFly(Long.parseLong(recordArray2[9]));
+            pr.setBasesOnBalls(Long.parseLong(recordArray2[10]));
+            pr.setStrikeOuts(Long.parseLong(recordArray2[11]));
+            pr.setRuns(Long.parseLong(recordArray2[12]));
+            pr.setEarnedRuns(Long.parseLong(recordArray2[13].trim()));
+
+            this.recordService.createPitcherRecordByDate(pr);
         }
         
         return "redirect:/back/createRecordView.do";

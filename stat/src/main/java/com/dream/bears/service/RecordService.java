@@ -12,4 +12,6 @@ public interface RecordService {
     void createTeamRecord(TeamRecord tr);
 
     void createBatterRecordByDate(BatterRecord br);
+
+    void createPitcherRecordByDate(PitcherRecord pr);
 }

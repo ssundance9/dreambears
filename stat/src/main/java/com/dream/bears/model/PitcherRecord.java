@@ -3,6 +3,12 @@ package com.dream.bears.model;
 public class PitcherRecord {
     private long year;
     
+    private long month;
+    
+    private long date;
+    
+    private long gameSeq;
+    
     private String name;
     
     private long wins;
@@ -45,6 +51,30 @@ public class PitcherRecord {
 
     public void setYear(long year) {
         this.year = year;
+    }
+
+    public long getMonth() {
+        return month;
+    }
+
+    public void setMonth(long month) {
+        this.month = month;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public long getGameSeq() {
+        return gameSeq;
+    }
+
+    public void setGameSeq(long gameSeq) {
+        this.gameSeq = gameSeq;
     }
 
     public String getName() {

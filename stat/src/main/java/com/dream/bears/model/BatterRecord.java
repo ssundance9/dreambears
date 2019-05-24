@@ -7,6 +7,8 @@ public class BatterRecord {
     
     private long date;
     
+    private long gameSeq;
+    
     private String name;
     
     private long games;
@@ -73,6 +75,14 @@ public class BatterRecord {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public long getGameSeq() {
+        return gameSeq;
+    }
+
+    public void setGameSeq(long gameSeq) {
+        this.gameSeq = gameSeq;
     }
 
     public String getName() {
