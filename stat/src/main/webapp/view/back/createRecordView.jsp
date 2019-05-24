@@ -53,6 +53,13 @@
     <button type="submit">입력</button>
 </form>
 <br/>
+<form name="createForm" action="/back/createBatterRecordByDate.do" method="post">
+    <input type="text" name="year" value=""/>년 <input type="text" name="month" value=""/>월 <input type="text" name="date" value=""/>일
+    <br/>
+    경기별타자기록<textarea name="recordStr" rows="20" cols="100"></textarea>
+    <button type="submit">입력</button>
+</form>
+<br/>
 <a href="/main.do">메인</a>
 </body>
 </html>

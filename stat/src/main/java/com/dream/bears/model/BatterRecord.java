@@ -3,6 +3,10 @@ package com.dream.bears.model;
 public class BatterRecord {
     private long year;
     
+    private long month;
+    
+    private long date;
+    
     private String name;
     
     private long games;
@@ -53,6 +57,22 @@ public class BatterRecord {
 
     public void setYear(long year) {
         this.year = year;
+    }
+    
+    public long getMonth() {
+        return month;
+    }
+
+    public void setMonth(long month) {
+        this.month = month;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public String getName() {

@@ -16,6 +16,8 @@ public class RecordServiceImpl implements RecordService {
     final String batter = "batter";
     final String pitcher = "pitcher";
     final String team = "team";
+    final String batterDate = "batterDate";
+    final String pitcherDate = "pitcherDate";
     
     public Datastore getDatastore() {
         if (this.datastore == null) {
@@ -130,5 +132,46 @@ public class RecordServiceImpl implements RecordService {
 
         // Saves the entity
         datastore.put(teamRecord);
+    }
+
+    @Override
+    public void createBatterRecordByDate(BatterRecord br) {
+        // Instantiates a client
+        Datastore datastore = this.getDatastore();
+
+        // The kind for the new entity
+        //String batter = "batter";
+        // The name/ID for the new entity
+        //String name = br.getName();
+        // The Cloud Datastore key for the new entity
+        Key batterKey = datastore.newKeyFactory().setKind(this.batterDate).newKey(String.valueOf(br.getYear()) + String.valueOf(br.getMonth()) + String.valueOf(br.getDate()) + br.getName());
+        
+        // 지우고 다시 저장
+        datastore.delete(batterKey);
+
+        // Prepares the new entity
+        Entity batterRecord = Entity.newBuilder(batterKey)
+            .set("Year", br.getYear())
+            .set("Month", br.getMonth())
+            .set("Date", br.getDate())
+            .set("Name", br.getName())
+            .set("Games", br.getGames())
+            .set("PlateAppears", br.getPlateAppears())
+            .set("AtBats", br.getAtBats())
+            .set("Hits", br.getHits())
+            .set("Singles", br.getSingles())
+            .set("Doubles", br.getDoubles())
+            .set("Triples", br.getTriples())
+            .set("HomeRuns", br.getHomeRuns())
+            .set("RunsScored", br.getRunsScored())
+            .set("RunsBattedIn", br.getRunsBattedIn())
+            .set("BasesOnBalls", br.getBasesOnBalls())
+            .set("StrikeOuts", br.getStrikeOuts())
+            .set("StolenBases", br.getStolenBases())
+            .build();
+
+        // Saves the entity
+        datastore.put(batterRecord);
+        
     }
 }

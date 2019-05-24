@@ -106,4 +106,46 @@ public class BackController {
         
         return "redirect:/back/createRecordView.do";
     }
+    
+    @RequestMapping(value = "/createBatterRecordByDate")
+    public String createBatterRecordByDate(ModelMap map, Long year, Long month, Long date, String recordStr) {
+        String[] recordArray1 = recordStr.split("\\n");
+        
+        for (int i = 0; i < recordArray1.length; i++) {
+            String rec = recordArray1[i];
+            
+            //System.out.println(rec + "!!!!!!!");
+            
+            String[] recordArray2 = rec.split("\\t");
+            
+            BatterRecord br = new BatterRecord();
+            br.setYear(year);
+            br.setMonth(month);
+            br.setDate(date);
+            br.setName(recordArray2[0].trim());
+            br.setPlateAppears(Long.parseLong(recordArray2[1]));
+            
+            //System.out.println(recordArray2[2] + "!!!!!!!!!!!");
+            
+            br.setAtBats(Long.parseLong(recordArray2[2]));
+            br.setHits(Long.parseLong(recordArray2[3]));
+            br.setSingles(Long.parseLong(recordArray2[4]));
+            br.setDoubles(Long.parseLong(recordArray2[5]));
+            br.setTriples(Long.parseLong(recordArray2[6]));
+            br.setHomeRuns(Long.parseLong(recordArray2[7]));
+            br.setRunsScored(Long.parseLong(recordArray2[8]));
+            br.setRunsBattedIn(Long.parseLong(recordArray2[9]));
+            br.setBasesOnBalls(Long.parseLong(recordArray2[10]));
+            br.setStrikeOuts(Long.parseLong(recordArray2[11]));
+            
+            //System.out.println(recordArray2[12] + "!!!!!!!!!!!");
+            //System.out.println(recordArray2[12].trim() + "@@@@@@@@@@@@");
+            
+            br.setStolenBases(Long.parseLong(recordArray2[12].trim()));
+
+            this.recordService.createBatterRecordByDate(br);
+        }
+        
+        return "redirect:/back/createRecordView.do";
+    }
 }
