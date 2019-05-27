@@ -1,7 +1,9 @@
 package com.dream.bears.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dream.bears.dao.RecordDao;
 import com.dream.bears.model.BatterRecord;
 import com.dream.bears.model.PitcherRecord;
 import com.dream.bears.model.TeamRecord;
@@ -18,12 +20,15 @@ public class RecordServiceImpl implements RecordService {
     final String team = "team";
     final String batterDate = "batterDate";
     final String pitcherDate = "pitcherDate";
-    
+
+    @Autowired
+    private RecordDao recordDao;
+
     public Datastore getDatastore() {
         if (this.datastore == null) {
             this.datastore = DatastoreOptions.getDefaultInstance().getService();
         }
-        
+
         return this.datastore;
     }
 
@@ -38,7 +43,7 @@ public class RecordServiceImpl implements RecordService {
         //String name = br.getName();
         // The Cloud Datastore key for the new entity
         Key batterKey = datastore.newKeyFactory().setKind(this.batter).newKey(br.getYear() + br.getName());
-        
+
         // 지우고 다시 저장
         datastore.delete(batterKey);
 
@@ -76,7 +81,7 @@ public class RecordServiceImpl implements RecordService {
         //String name = br.getName();
         // The Cloud Datastore key for the new entity
         Key pitcherKey = datastore.newKeyFactory().setKind(this.pitcher).newKey(pr.getYear() + pr.getName());
-        
+
         // 지우고 다시 저장
         datastore.delete(pitcherKey);
 
@@ -114,7 +119,7 @@ public class RecordServiceImpl implements RecordService {
         //String name = br.getName();
         // The Cloud Datastore key for the new entity
         Key teamKey = datastore.newKeyFactory().setKind(this.team).newKey(String.valueOf(tr.getYear()) + String.valueOf(tr.getMonth()) + String.valueOf(tr.getDate()) + tr.getOpponent() + tr.getHomeAway());
-        
+
         // 지우고 다시 저장
         datastore.delete(teamKey);
 
@@ -137,42 +142,38 @@ public class RecordServiceImpl implements RecordService {
     @Override
     public void createBatterRecordByDate(BatterRecord br) {
         // Instantiates a client
-        Datastore datastore = this.getDatastore();
+        //Datastore datastore = this.getDatastore();
 
         // The kind for the new entity
         //String batter = "batter";
         // The name/ID for the new entity
         //String name = br.getName();
         // The Cloud Datastore key for the new entity
-        Key batterKey = datastore.newKeyFactory().setKind(this.batterDate).newKey(String.valueOf(br.getYear()) + String.valueOf(br.getMonth()) + String.valueOf(br.getDate()) + "_" + String.valueOf(br.getGameSeq()) + "_" + br.getName());
-        
+        //Key batterKey = datastore.newKeyFactory().setKind(this.batterDate).newKey(String.valueOf(br.getYear()) + String.valueOf(br.getMonth()) + String.valueOf(br.getDate()) + "_" + String.valueOf(br.getGameSeq()) + "_" + br.getName());
+
         // 지우고 다시 저장
-        datastore.delete(batterKey);
+        //datastore.delete(batterKey);
 
         // Prepares the new entity
-        Entity batterRecord = Entity.newBuilder(batterKey)
-            .set("Year", br.getYear())
-            .set("Month", br.getMonth())
-            .set("Date", br.getDate())
-            .set("Name", br.getName())
-            .set("Games", br.getGames())
-            .set("PlateAppears", br.getPlateAppears())
-            .set("AtBats", br.getAtBats())
-            .set("Hits", br.getHits())
-            .set("Singles", br.getSingles())
-            .set("Doubles", br.getDoubles())
-            .set("Triples", br.getTriples())
-            .set("HomeRuns", br.getHomeRuns())
-            .set("RunsScored", br.getRunsScored())
-            .set("RunsBattedIn", br.getRunsBattedIn())
-            .set("BasesOnBalls", br.getBasesOnBalls())
-            .set("StrikeOuts", br.getStrikeOuts())
-            .set("StolenBases", br.getStolenBases())
-            .build();
+        /*
+         * Entity batterRecord = Entity.newBuilder(batterKey) .set("Year", br.getYear())
+         * .set("Month", br.getMonth()) .set("Date", br.getDate()) .set("Name",
+         * br.getName()) .set("Games", br.getGames()) .set("PlateAppears",
+         * br.getPlateAppears()) .set("AtBats", br.getAtBats()) .set("Hits",
+         * br.getHits()) .set("Singles", br.getSingles()) .set("Doubles",
+         * br.getDoubles()) .set("Triples", br.getTriples()) .set("HomeRuns",
+         * br.getHomeRuns()) .set("RunsScored", br.getRunsScored()) .set("RunsBattedIn",
+         * br.getRunsBattedIn()) .set("BasesOnBalls", br.getBasesOnBalls())
+         * .set("StrikeOuts", br.getStrikeOuts()) .set("StolenBases",
+         * br.getStolenBases()) .build();
+         */
 
         // Saves the entity
-        datastore.put(batterRecord);
-        
+        //datastore.put(batterRecord);
+
+        this.recordDao.deleteBatterRecord(br);
+        this.recordDao.insertBatterRecord(br);
+
     }
 
     @Override
@@ -186,7 +187,7 @@ public class RecordServiceImpl implements RecordService {
         //String name = br.getName();
         // The Cloud Datastore key for the new entity
         Key pitcherKey = datastore.newKeyFactory().setKind(this.pitcherDate).newKey(String.valueOf(pr.getYear()) + String.valueOf(pr.getMonth()) + String.valueOf(pr.getDate()) + "_" + String.valueOf(pr.getGameSeq()) + "_" + pr.getName());
-        
+
         // 지우고 다시 저장
         datastore.delete(pitcherKey);
 
@@ -213,6 +214,6 @@ public class RecordServiceImpl implements RecordService {
 
         // Saves the entity
         datastore.put(pitcherRecord);
-        
+
     }
 }

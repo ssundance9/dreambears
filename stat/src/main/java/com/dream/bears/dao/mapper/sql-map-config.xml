@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <!-- <typeAliases>
+        <typeAlias type="com.eggtec.eggboard.model.Bin" alias="Bin"/>
+        <typeAlias type="com.eggtec.eggboard.model.Egg" alias="Egg"/>
+        <typeAlias type="com.eggtec.eggboard.model.Fan" alias="Fan"/>
+        <typeAlias type="com.eggtec.eggboard.model.Farm" alias="Farm"/>
+        <typeAlias type="com.eggtec.eggboard.model.Light" alias="Light"/>
+        <typeAlias type="com.eggtec.eggboard.model.Thermometer" alias="Thermometer"/>
+        <typeAlias type="com.eggtec.eggboard.model.User" alias="User"/>
+        <typeAlias type="com.eggtec.eggboard.model.Hen" alias="Hen"/>
+        <typeAlias type="com.eggtec.eggboard.model.ErrorCode" alias="ErrorCode"/>
+        <typeAlias type="com.eggtec.eggboard.model.Code" alias="Code"/>
+    
+    </typeAliases> -->
+</configuration>

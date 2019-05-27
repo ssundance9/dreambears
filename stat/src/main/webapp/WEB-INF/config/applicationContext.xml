@@ -20,28 +20,24 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     
-    <!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        
-        <property name="url" value="jdbc:mysql://localhost:3306/egg_dev?useUnicode=true&amp;characterEncoding=utf8"/>
-        <property name="username" value="root"/>
-        <property name="password" value="1274j"/>
-        
-        <property name="url" value="jdbc:mysql://innodb-005.cafe24.com:3306/eggtecdb?useUnicode=true&amp;characterEncoding=utf8"/>
-        <property name="username" value="eggtecdb"/>
-        <property name="password" value="dprm2356!!"/>
-        <property name="validationQuery" value="select 1"/>
-    </bean> -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql:///dreambears?cloudSqlInstance=dreambears:asia-northeast2:myinstance&amp;socketFactory=com.google.cloud.sql.postgres.SocketFactory"/>
+        <!-- ///${database}?cloudSqlInstance=${INSTANCE_CONNECTION_NAME}&amp;socketFactory=com.google.cloud.sql.postgres.SocketFactory -->
+        <!-- <property name="url" value="jdbc:postgresql://34.97.205.3:5432/dreambears"/> -->
+        <property name="username" value="postgres"/>
+        <property name="password" value="j147258369!"/>
+    </bean>
     
-    <!-- <bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 	    <property name="dataSource" ref="dataSource"/>
-	    <property name="mapperLocations" value="classpath:/com/eggtec/eggboard/dao/mapper/*Sql.xml"/>
-	    <property name="configLocation" value="classpath:/com/eggtec/eggboard/dao/mapper/sql-map-config.xml"/>
-	</bean> -->
+	    <property name="mapperLocations" value="classpath:/com/dream/bears/dao/mapper/*Sql.xml"/>
+	    <property name="configLocation" value="classpath:/com/dream/bears/dao/mapper/sql-map-config.xml"/>
+	</bean>
      
-    <!-- <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-        <constructor-arg index="0" ref="sqlSession"/>
-    </bean> -->
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
     
     <!-- <tx:annotation-driven transaction-manager="transactionManager" />
     <bean id="transactionManager"

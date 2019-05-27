@@ -6,8 +6,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.dream.bears.dao.StatDao;
 import com.dream.bears.model.BatterRecord;
 import com.dream.bears.model.PitcherRecord;
 import com.dream.bears.model.TeamRecord;
@@ -23,6 +27,8 @@ import com.google.cloud.datastore.StructuredQuery.PropertyFilter;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 @Service
 public class StatServiceImpl implements StatService {
@@ -30,6 +36,13 @@ public class StatServiceImpl implements StatService {
     final String batter = "batter";
     final String pitcher = "pitcher";
     final String team = "team";
+    final String DB_NAME = "myinstance";
+    final String DB_USER = "root";
+    final String DB_PASS = "j147258369!";
+    final String CLOUD_SQL_CONNECTION_NAME = "dreambears:asia-northeast2:myinstance";
+    
+    @Autowired
+    private StatDao statDao;
     
     public Datastore getDatastore() {
         if (this.datastore == null) {
@@ -632,5 +645,32 @@ public class StatServiceImpl implements StatService {
         list.add(total);
         
         return list;
+    }
+    
+    public void test() {
+     // The configuration object specifies behaviors for the connection pool.
+        HikariConfig config = new HikariConfig();
+
+        // Configure which instance and what database user to connect with.
+        config.setJdbcUrl(String.format("jdbc:postgresql:///%s", DB_NAME));
+        config.setUsername(DB_USER); // e.g. "root", "postgres"
+        config.setPassword(DB_PASS); // e.g. "my-password"
+
+        // For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections.
+        // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
+        config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.postgres.SocketFactory");
+        config.addDataSourceProperty("cloudSqlInstance", CLOUD_SQL_CONNECTION_NAME);
+
+        // ... Specify additional connection properties here.
+
+        // ...
+
+        // Initialize the connection pool using the configuration object.
+        DataSource pool = new HikariDataSource(config);
+    }
+
+    @Override
+    public int selectTest() {
+        return this.statDao.selectTest();
     }
 }

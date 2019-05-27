@@ -68,5 +68,7 @@
 </form>
 <br/>
 <a href="/main.do">메인</a>
+<br/>
+<a href="/selectTest.do">쿼리테스트</a>
 </body>
 </html>

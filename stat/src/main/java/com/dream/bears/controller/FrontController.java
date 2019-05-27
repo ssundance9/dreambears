@@ -106,5 +106,12 @@ public class FrontController {
         
         return "/front/pitcherStatsView";
     }
+    
+    @RequestMapping(value = "/selectTest")
+    public String selectTest(ModelMap map, String name) {
+        map.addAttribute("selectTest", this.statService.selectTest());
+        
+        return "/front/selectTest";
+    }
 
 }

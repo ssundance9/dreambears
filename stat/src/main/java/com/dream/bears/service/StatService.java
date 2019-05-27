@@ -18,5 +18,7 @@ public interface StatService {
     List<TeamRecord> getTeamStatsByYear(Long year);
 
     List<TeamRecord> getTeamTotalStat();
+    
+    int selectTest();
 
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StatDao">
+    <!-- <select id="selectFarm" parameterType="Farm" resultType="Farm">
+        SELECT work_seq             workSeq
+             , serial_no            serialNo
+             , farm_no              farmNo
+             , connection_status    connectionStatus
+             , status               status
+             , input_count          inputCount
+             , water_qntty          waterQntty
+             , error_code           errorCode
+             , type                 type
+             , reg_dtm              regDtm
+             , mod_dtm              modDtm
+        FROM   tb_farm
+        WHERE  serial_no = #{serialNo}
+        AND    farm_no   = #{farmNo}
+        AND    type      = #{type}
+        ORDER  BY work_seq DESC
+        LIMIT 1
+    </select>
+    
+-->
+    <select id="selectTest" resultType="int">
+        select count(*)
+        from batter_record
+    </select>
+
+</mapper>
+
