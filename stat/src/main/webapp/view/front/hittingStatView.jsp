@@ -28,7 +28,9 @@ tr {
 
 <script type="text/javascript">
 jQuery(function($) {
-    $("#tabs").tabs();
+	$("#tabs").tabs({
+    	active: 3
+    });
 
     $("#table").DataTable({
     	paging: false,
@@ -46,16 +48,16 @@ jQuery(function($) {
     	document.location.href = "/battersStatView.do?year=" + $(this).val();
     });
 
+    $("#goBatters").on("click", function() {
+    	document.location.href = "/battersStatView.do";
+    });
+
     $("#goPitchers").on("click", function() {
     	document.location.href = "/pitchersStatView.do";
     });
 
     $("#goTeam").on("click", function() {
     	document.location.href = "/teamStatsView.do";
-    });
-
-    $("#goHitting").on("click", function() {
-    	document.location.href = "/hittingStatView.do?year=2019";
     });
 
     $("#title").on("click", function() {
@@ -71,10 +73,10 @@ jQuery(function($) {
     	}
     });
 
-    adjustTable($("#tabs-1"));
+    adjustTable($("#tabs-4"));
 
     $(window).resize(function() {
-    	adjustTable($("#tabs-1"));
+    	adjustTable($("#tabs-4"));
     });
 })
 </script>
@@ -84,26 +86,32 @@ jQuery(function($) {
 <h2 id="title">DREAM BEARS STATS</h2>
 <div id="tabs">
     <ul>
-        <li><a href="#tabs-1">타격</a></li>
+        <li><a href="#tabs-1" id="goBatters">타격</a></li>
         <li><a href="#tabs-2" id="goPitchers">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
-        <li><a href="#tabs-4" id="goHitting">타격(연도별)</a></li>
+        <li><a href="#tabs-4">타격(연도별)</a></li>
     </ul>
     <div id="tabs-1">
+    </div>
+    <div id="tabs-2">
+    </div>
+    <div id="tabs-3">
+    </div>
+    <div id="tabs-4">
         연도
         <select name="year" id="selectBatterYear">
-            <option value="9999" <c:if test="${year == 9999}">selected="selected"</c:if>>통산</option>
-            <option value="2019" <c:if test="${year == 2019}">selected="selected"</c:if>>2019</option>
-            <option value="2018" <c:if test="${year == 2018}">selected="selected"</c:if>>2018</option>
-            <option value="2017" <c:if test="${year == 2017}">selected="selected"</c:if>>2017</option>
-            <option value="2016" <c:if test="${year == 2016}">selected="selected"</c:if>>2016</option>
-            <option value="2015" <c:if test="${year == 2015}">selected="selected"</c:if>>2015</option>
-            <option value="2014" <c:if test="${year == 2014}">selected="selected"</c:if>>2014</option>
-            <option value="2013" <c:if test="${year == 2013}">selected="selected"</c:if>>2013</option>
-            <option value="2012" <c:if test="${year == 2012}">selected="selected"</c:if>>2012</option>
-            <option value="2011" <c:if test="${year == 2011}">selected="selected"</c:if>>2011</option>
-            <option value="2010" <c:if test="${year == 2010}">selected="selected"</c:if>>2010</option>
-            <option value="2009" <c:if test="${year == 2009}">selected="selected"</c:if>>2009</option>
+            <option value="9999" <c:if test="${param.year == 9999}">selected="selected"</c:if>>통산</option>
+            <option value="2019" <c:if test="${param.year == 2019}">selected="selected"</c:if>>2019</option>
+            <option value="2018" <c:if test="${param.year == 2018}">selected="selected"</c:if>>2018</option>
+            <option value="2017" <c:if test="${param.year == 2017}">selected="selected"</c:if>>2017</option>
+            <option value="2016" <c:if test="${param.year == 2016}">selected="selected"</c:if>>2016</option>
+            <option value="2015" <c:if test="${param.year == 2015}">selected="selected"</c:if>>2015</option>
+            <option value="2014" <c:if test="${param.year == 2014}">selected="selected"</c:if>>2014</option>
+            <option value="2013" <c:if test="${param.year == 2013}">selected="selected"</c:if>>2013</option>
+            <option value="2012" <c:if test="${param.year == 2012}">selected="selected"</c:if>>2012</option>
+            <option value="2011" <c:if test="${param.year == 2011}">selected="selected"</c:if>>2011</option>
+            <option value="2010" <c:if test="${param.year == 2010}">selected="selected"</c:if>>2010</option>
+            <option value="2009" <c:if test="${param.year == 2009}">selected="selected"</c:if>>2009</option>
 
         </select>
 
@@ -318,16 +326,9 @@ jQuery(function($) {
             </tfoot>
         </table>
     </div>
-    <div id="tabs-2">
-    </div>
-    <div id="tabs-3">
-    </div>
-    <div id="tabs-4">
-    </div>
 </div>
 <br/>
-
-<!-- <a href="/back/createRecordView.do">기록입력</a> -->
+<a href="/battersStatView.do">DREAM BEARS STATS</a>
 
 </body>
 </html>

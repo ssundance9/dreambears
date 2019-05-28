@@ -2,29 +2,31 @@ package com.dream.bears.model;
 
 public class TeamRecord {
     private long year;
-    
+
     private long month;
-    
+
     private long date;
-    
+
+    private long gameSeq;
+
     private String ballPark;
-    
+
     private String type;
-    
+
     private String homeAway;
-    
+
     private String result;
-    
+
     private String opponent;
-    
+
     private long wins;
-    
+
     private long draws;
-    
+
     private long losses;
-    
+
     private long totalGames;
-    
+
     private double winPcg;
 
     public long getYear() {
@@ -49,6 +51,14 @@ public class TeamRecord {
 
     public void setDate(long date) {
         this.date = date;
+    }
+
+    public long getGameSeq() {
+        return gameSeq;
+    }
+
+    public void setGameSeq(long gameSeq) {
+        this.gameSeq = gameSeq;
     }
 
     public String getBallPark() {
@@ -90,7 +100,7 @@ public class TeamRecord {
     public void setOpponent(String opponent) {
         this.opponent = opponent;
     }
-    
+
     public long getWins() {
         return wins;
     }

@@ -14,7 +14,7 @@ import com.dream.bears.service.StatService;
 public class FrontController {
     @Autowired
     private StatService statService;
-    
+
     /*@RequestMapping(value = "/main")
     public String main(ModelMap map, Long year) {
         if (year == null) {
@@ -23,33 +23,33 @@ public class FrontController {
 
         map.addAttribute("list", this.statService.getBattersStatByYear(year));
         map.addAttribute("year", year);
-        
+
         return "/front/main";
     }*/
-    
+
     @RequestMapping(value = "/battersStatView")
     public String battersStatView(ModelMap map, Long year, Long pa) {
         if (year == null) {
             year = 9999L;
         }
-        
+
         if (pa == null) {
             pa = 0L;
         }
-        
+
         map.addAttribute("list", this.statService.getBattersStatByYear(year, pa));
         map.addAttribute("year", year);
         map.addAttribute("pa", pa);
-        
+
         return "/front/battersStatView";
     }
-    
+
     @RequestMapping(value = "/pitchersStatView")
     public String pitchersStatView(ModelMap map, Long year, Long ip) {
         if (year == null) {
             year = 9999L;
         }
-        
+
         if (ip == null) {
             ip = 0L;
         }
@@ -57,10 +57,10 @@ public class FrontController {
         map.addAttribute("list", this.statService.getPitchersStatByYear(year, ip));
         map.addAttribute("year", year);
         map.addAttribute("ip", ip);
-        
+
         return "/front/pitchersStatView";
     }
-    
+
     @RequestMapping(value = "/teamTotalStatView")
     public String teamTotalStatView(ModelMap map, Long year) {
         if (year == null) {
@@ -69,19 +69,19 @@ public class FrontController {
 
         map.addAttribute("list", this.statService.getTeamTotalStat());
         map.addAttribute("year", year);
-         
+
         return "/front/teamTotalStatView";
     }
-    
+
     @RequestMapping(value = "/teamStatsView")
     public String teamStatsView(ModelMap map, Long year) {
         if (year == null) {
             year = 9999L;
         }
-        
+
         List<TeamRecord> list = null;
         map.addAttribute("year", year);
-        
+
         if (year == 9999L) {
             list = this.statService.getTeamTotalStat();
             map.addAttribute("list", list);
@@ -92,26 +92,27 @@ public class FrontController {
             return "/front/teamStatsView";
         }
     }
-    
+
     @RequestMapping(value = "/batterStatsView")
     public String batterStatsView(ModelMap map, String name) {
         map.addAttribute("list", this.statService.getBatterStatsByName(name));
-        
+
         return "/front/batterStatsView";
     }
-    
+
     @RequestMapping(value = "/pitcherStatsView")
     public String pitcherStatsView(ModelMap map, String name) {
         map.addAttribute("list", this.statService.getPitcherStatsByName(name));
-        
+
         return "/front/pitcherStatsView";
     }
-    
-    @RequestMapping(value = "/selectTest")
-    public String selectTest(ModelMap map, String name) {
-        map.addAttribute("selectTest", this.statService.selectTest());
-        
-        return "/front/selectTest";
+
+    @RequestMapping(value = "/hittingStatView")
+    public String hittingStatView(ModelMap map, Long year) {
+
+        map.addAttribute("list", this.statService.getHittingStatByYear(year));
+
+        return "/front/hittingStatView";
     }
 
 }

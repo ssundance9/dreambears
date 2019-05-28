@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="StatDao">
-    <!-- <select id="selectFarm" parameterType="Farm" resultType="Farm">
-        SELECT work_seq             workSeq
-             , serial_no            serialNo
-             , farm_no              farmNo
-             , connection_status    connectionStatus
-             , status               status
-             , input_count          inputCount
-             , water_qntty          waterQntty
-             , error_code           errorCode
-             , type                 type
-             , reg_dtm              regDtm
-             , mod_dtm              modDtm
-        FROM   tb_farm
-        WHERE  serial_no = #{serialNo}
-        AND    farm_no   = #{farmNo}
-        AND    type      = #{type}
-        ORDER  BY work_seq DESC
-        LIMIT 1
-    </select>
-    
--->
-    <select id="selectTest" resultType="int">
-        select count(*)
-        from batter_record
+
+    <select id="selectHittingStatByYear" resultType="com.dream.bears.model.BatterRecord">
+        SELECT A.*
+        FROM    (
+            SELECT  YEAR
+                    , NAME
+                    , SUM(1) AS GAMES
+                    , SUM(PLATE_APPEARS) AS PLATE_APPEARS
+                    , SUM(AT_BATS) AS AT_BATS
+                    , SUM(HITS) AS HITS
+                    , SUM(SINGLES) AS SINGLES
+                    , SUM(DOUBLES) AS DOUBLES
+                    , SUM(TRIPLES) AS TRIPLES
+                    , SUM(HOME_RUNS) AS HOME_RUNS
+                    , SUM(RUNS_SCORED) AS RUNS_SCORED
+                    , SUM(RUNS_BATTED_IN) AS RUNS_BATTED_IN
+                    , SUM(BASES_ON_BALLS) AS BASES_ON_BALLS
+                    , SUM(STRIKE_OUTS) AS STRIKE_OUTS
+                    , SUM(STOLEN_BASES) AS  STOLEN_BASES
+            FROM    BATTER_RECORD
+            WHERE   YEAR = #{year}
+            GROUP BY YEAR, NAME
+        ) A
+        ORDER BY A.NAME
     </select>
 
 </mapper>
