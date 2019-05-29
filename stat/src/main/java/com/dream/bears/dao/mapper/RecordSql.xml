@@ -45,12 +45,66 @@
     </insert>
 
     <delete id="deleteBatterRecord">
-        delete from BATTER_RECORD
-        where   year = #{year}
-        and     month = #{month}
-        and     date = #{date}
-        and     game_seq = #{gameSeq}
-        and     name = #{name}
+        DELETE FROM BATTER_RECORD
+        WHERE   YEAR = #{year}
+        AND     MONTH = #{month}
+        AND     DATE = #{date}
+        AND     GAME_seq = #{gameSeq}
+        AND     NAME = #{name}
+    </delete>
+
+    <insert id="insertPitcherRecord" >
+        INSERT INTO PITCHER_RECORD
+        (
+            YEAR
+            , MONTH
+            , DATE
+            , GAME_SEQ
+            , NAME
+            , WINS
+            , LOSSES
+            , SAVES
+            , INNINGS_PITCHED
+            , PLATE_APPEARS
+            , AT_BATS
+            , HITS
+            , HOME_RUNS
+            , SACRIFICE_FLY
+            , BASES_ON_BALLS
+            , STRIKE_OUTS
+            , RUNS
+            , EARNED_RUNS
+        )
+        VALUES
+        (
+            #{year}
+            , #{month}
+            , #{date}
+            , #{gameSeq}
+            , #{name}
+            , #{wins}
+            , #{losses}
+            , #{saves}
+            , #{inningsPitched}
+            , #{plateAppears}
+            , #{atBats}
+            , #{hits}
+            , #{homeRuns}
+            , #{sacrificeFly}
+            , #{basesOnBalls}
+            , #{strikeOuts}
+            , #{runs}
+            , #{earnedRuns}
+        )
+    </insert>
+
+    <delete id="deletePitcherRecord">
+        DELETE FROM PITCHER_RECORD
+        WHERE   YEAR = #{year}
+        AND     MONTH = #{month}
+        AND     DATE = #{date}
+        AND     GAME_SEQ = #{gameSeq}
+        AND     NAME = #{name}
     </delete>
 
 </mapper>

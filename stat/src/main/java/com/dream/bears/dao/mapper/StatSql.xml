@@ -7,6 +7,32 @@
         FROM    (
             SELECT  YEAR
                     , NAME
+                    , SUBSTRING(NAME, 1, 3) NAME2
+                    , SUM(1) AS GAMES
+                    , SUM(PLATE_APPEARS) AS PLATE_APPEARS
+                    , SUM(AT_BATS) AS AT_BATS
+                    , SUM(HITS) AS HITS
+                    , SUM(SINGLES) AS SINGLES
+                    , SUM(DOUBLES) AS DOUBLES
+                    , SUM(TRIPLES) AS TRIPLES
+                    , SUM(HOME_RUNS) AS HOME_RUNS
+                    , SUM(RUNS_SCORED) AS RUNS_SCORED
+                    , SUM(RUNS_BATTED_IN) AS RUNS_BATTED_IN
+                    , SUM(BASES_ON_BALLS) AS BASES_ON_BALLS
+                    , SUM(STRIKE_OUTS) AS STRIKE_OUTS
+                    , SUM(STOLEN_BASES) AS  STOLEN_BASES
+            FROM    BATTER_RECORD
+            WHERE   YEAR = #{year}
+            GROUP BY YEAR, NAME
+        ) A
+        ORDER BY A.NAME2 ASC
+    </select>
+
+    <select id="selectPichingStatByYear" resultType="com.dream.bears.model.BatterRecord">
+        SELECT A.*
+        FROM    (
+            SELECT  YEAR
+                    , NAME
                     , SUM(1) AS GAMES
                     , SUM(PLATE_APPEARS) AS PLATE_APPEARS
                     , SUM(AT_BATS) AS AT_BATS
@@ -25,6 +51,33 @@
             GROUP BY YEAR, NAME
         ) A
         ORDER BY A.NAME
+    </select>
+
+    <select id="selectHittingStatByGame" resultType="com.dream.bears.model.BatterRecord">
+        SELECT A.*
+        FROM    (
+            SELECT  YEAR
+                    , NAME
+                    , SUBSTRING(NAME, 1, 3) NAME2
+                    , PLATE_APPEARS
+                    , AT_BATS
+                    , HITS
+                    , SINGLES
+                    , DOUBLES
+                    , TRIPLES
+                    , HOME_RUNS
+                    , RUNS_SCORED
+                    , RUNS_BATTED_IN
+                    , BASES_ON_BALLS
+                    , STRIKE_OUTS
+                    , STOLEN_BASES
+            FROM    BATTER_RECORD
+            WHERE   YEAR = #{year}
+            AND     MONTH = #{month}
+            AND     DATE = #{date}
+            AND     GAME_SEQ = #{gameSeq}
+        ) A
+        ORDER BY A.NAME2 ASC
     </select>
 
 </mapper>

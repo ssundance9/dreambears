@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.dream.bears.model.BatterRecord;
 import com.dream.bears.model.TeamRecord;
 import com.dream.bears.service.StatService;
 
@@ -107,12 +108,18 @@ public class FrontController {
         return "/front/pitcherStatsView";
     }
 
-    @RequestMapping(value = "/hittingStatView")
-    public String hittingStatView(ModelMap map, Long year) {
-
+    @RequestMapping(value = "/hittingStatByYearView")
+    public String hittingStatByYearView(ModelMap map, Long year) {
         map.addAttribute("list", this.statService.getHittingStatByYear(year));
 
-        return "/front/hittingStatView";
+        return "/front/hittingStatByYearView";
+    }
+
+    @RequestMapping(value = "/hittingStatByGameView")
+    public String hittingStatByDateGame(ModelMap map, BatterRecord br) {
+        map.addAttribute("list", this.statService.getHittingStatByGame(br));
+
+        return "/front/hittingStatByGameView";
     }
 
 }

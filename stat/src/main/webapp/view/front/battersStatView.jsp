@@ -54,8 +54,12 @@ jQuery(function($) {
     	document.location.href = "/teamStatsView.do";
     });
 
-    $("#goHitting").on("click", function() {
-    	document.location.href = "/hittingStatView.do?year=2019";
+    $("#goHittingYear").on("click", function() {
+    	document.location.href = "/hittingStatByYearView.do?year=2019";
+    });
+
+    $("#goHittingGame").on("click", function() {
+    	document.location.href = "/hittingStatByGameView.do?year=2019&month=1&date=5&gameSeq=1";
     });
 
     $("#title").on("click", function() {
@@ -87,7 +91,8 @@ jQuery(function($) {
         <li><a href="#tabs-1">타격</a></li>
         <li><a href="#tabs-2" id="goPitchers">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
-        <li><a href="#tabs-4" id="goHitting">타격(연도별)</a></li>
+        <li><a href="#tabs-4" id="goHittingYear">타격(연도별)</a></li>
+        <li><a href="#tabs-5" id="goHittingGame">타격(게임별)</a></li>
     </ul>
     <div id="tabs-1">
         연도
@@ -323,6 +328,8 @@ jQuery(function($) {
     <div id="tabs-3">
     </div>
     <div id="tabs-4">
+    </div>
+    <div id="tabs-5">
     </div>
 </div>
 <br/>

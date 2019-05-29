@@ -675,5 +675,10 @@ public class StatServiceImpl implements StatService {
         return this.statDao.selectHittingStatByYear(year);
     }
 
+    @Override
+    public List<BatterRecord> getHittingStatByGame(BatterRecord br) {
+        return this.statDao.selectHittingStatByGame(br);
+    }
+
 
 }

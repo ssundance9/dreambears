@@ -13,7 +13,10 @@ public class StatDao {
     @Autowired private SqlSessionTemplate sqlSessionTemplate;
 
     public List<BatterRecord> selectHittingStatByYear(Long year) {
-
         return this.sqlSessionTemplate.selectList("StatDao.selectHittingStatByYear", year);
+    }
+
+    public List<BatterRecord> selectHittingStatByGame(BatterRecord br) {
+        return this.sqlSessionTemplate.selectList("StatDao.selectHittingStatByGame", br);
     }
 }

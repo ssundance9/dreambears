@@ -21,4 +21,6 @@ public interface StatService {
 
     List<BatterRecord> getHittingStatByYear(Long year);
 
+    List<BatterRecord> getHittingStatByGame(BatterRecord br);
+
 }

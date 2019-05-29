@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.dream.bears.model.BatterRecord;
+import com.dream.bears.model.PitcherRecord;
 
 @Repository
 public class RecordDao {
@@ -16,7 +17,14 @@ public class RecordDao {
 
     public void deleteBatterRecord(BatterRecord br) {
         this.sqlSessionTemplate.delete("RecordDao.deleteBatterRecord", br);
+    }
 
+    public void insertPitcherRecord(PitcherRecord pr) {
+        this.sqlSessionTemplate.insert("RecordDao.insertPitcherRecord", pr);
+    }
+
+    public void deletePitcherRecord(PitcherRecord pr) {
+        this.sqlSessionTemplate.delete("RecordDao.deletePitcherRecord", pr);
     }
 
 }

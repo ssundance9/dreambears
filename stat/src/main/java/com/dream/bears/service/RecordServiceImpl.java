@@ -178,42 +178,8 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public void createPitcherRecordByDate(PitcherRecord pr) {
-     // Instantiates a client
-        Datastore datastore = this.getDatastore();
-
-        // The kind for the new entity
-        //String batter = "batter";
-        // The name/ID for the new entity
-        //String name = br.getName();
-        // The Cloud Datastore key for the new entity
-        Key pitcherKey = datastore.newKeyFactory().setKind(this.pitcherDate).newKey(String.valueOf(pr.getYear()) + String.valueOf(pr.getMonth()) + String.valueOf(pr.getDate()) + "_" + String.valueOf(pr.getGameSeq()) + "_" + pr.getName());
-
-        // 지우고 다시 저장
-        datastore.delete(pitcherKey);
-
-        // Prepares the new entity
-        Entity pitcherRecord = Entity.newBuilder(pitcherKey)
-            .set("Year", pr.getYear())
-            .set("Month", pr.getMonth())
-            .set("Date", pr.getDate())
-            .set("Name", pr.getName())
-            .set("Wins", pr.getWins())
-            .set("Losses", pr.getLosses())
-            .set("Saves", pr.getSaves())
-            .set("InningsPitched", pr.getInningsPitched())
-            .set("PlateAppears", pr.getPlateAppears())
-            .set("AtBats", pr.getAtBats())
-            .set("Hits", pr.getHits())
-            .set("HomeRuns", pr.getHomeRuns())
-            .set("SacrificeFly", pr.getSacrificeFly())
-            .set("BasesOnBalls", pr.getBasesOnBalls())
-            .set("StrikeOuts", pr.getStrikeOuts())
-            .set("Runs", pr.getRuns())
-            .set("EarnedRuns", pr.getEarnedRuns())
-            .build();
-
-        // Saves the entity
-        datastore.put(pitcherRecord);
+        this.recordDao.deletePitcherRecord(pr);
+        this.recordDao.insertPitcherRecord(pr);
 
     }
 }
