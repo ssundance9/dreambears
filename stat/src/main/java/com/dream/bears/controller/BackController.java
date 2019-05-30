@@ -15,20 +15,20 @@ import com.dream.bears.service.RecordService;
 public class BackController {
     @Autowired
     private RecordService recordService;
-    
+
     @RequestMapping(value = "/createRecordView")
     public String createRecordView(ModelMap map) {
     	return "/back/createRecordView";
     }
-    
+
     @RequestMapping(value = "/createBatterRecord")
     public String createBatterRecord(ModelMap map, Long year, String recordStr) {
         String[] recordArray1 = recordStr.split(",");
-        
+
         for (int i = 0; i < recordArray1.length; i++) {
             String rec = recordArray1[i];
             String[] recordArray2 = rec.split(" ");
-            
+
             BatterRecord br = new BatterRecord();
             br.setYear(year);
             br.setName(recordArray2[0].trim());
@@ -48,18 +48,18 @@ public class BackController {
 
             this.recordService.createBatterRecord(br);
         }
-        
+
         return "redirect:/back/createRecordView.do";
     }
-    
+
     @RequestMapping(value = "/createPitcherRecord")
     public String createPitcherRecord(ModelMap map, Long year, String recordStr) {
         String[] recordArray1 = recordStr.split(",");
-        
+
         for (int i = 0; i < recordArray1.length; i++) {
             String rec = recordArray1[i];
             String[] recordArray2 = rec.split(" ");
-            
+
             PitcherRecord pr = new PitcherRecord();
             pr.setYear(year);
             pr.setName(recordArray2[0].trim());
@@ -79,18 +79,18 @@ public class BackController {
 
             this.recordService.createPitcherRecord(pr);
         }
-        
+
         return "redirect:/back/createRecordView.do";
     }
-    
+
     @RequestMapping(value = "/createTeamRecord")
     public String createTeamRecord(ModelMap map, String recordStr) {
         String[] recordArray1 = recordStr.split(",");
-        
+
         for (int i = 0; i < recordArray1.length; i++) {
             String rec = recordArray1[i];
             String[] recordArray2 = rec.split(" ");
-            
+
             TeamRecord tr = new TeamRecord();
             tr.setYear(Long.parseLong(recordArray2[0].split("\\.")[0].trim()));
             tr.setMonth(Long.parseLong(recordArray2[0].split("\\.")[1]));
@@ -103,31 +103,32 @@ public class BackController {
 
             this.recordService.createTeamRecord(tr);
         }
-        
+
         return "redirect:/back/createRecordView.do";
     }
-    
+
     @RequestMapping(value = "/createBatterRecordByDate")
-    public String createBatterRecordByDate(ModelMap map, Long year, Long month, Long date, Long gameSeq, String recordStr) {
+    public String createBatterRecordByDate(ModelMap map, Long year, Long month, Long date, Long gameSeq, Long season, String recordStr) {
         String[] recordArray1 = recordStr.split("\\n");
-        
+
         for (int i = 0; i < recordArray1.length; i++) {
             String rec = recordArray1[i];
-            
+
             //System.out.println(rec + "!!!!!!!");
-            
+
             String[] recordArray2 = rec.split("\\t");
-            
+
             BatterRecord br = new BatterRecord();
             br.setYear(year);
             br.setMonth(month);
             br.setDate(date);
             br.setGameSeq(gameSeq);
+            br.setSeason(season);
             br.setName(recordArray2[0].trim());
             br.setPlateAppears(Long.parseLong(recordArray2[1]));
-            
+
             //System.out.println(recordArray2[2] + "!!!!!!!!!!!");
-            
+
             br.setAtBats(Long.parseLong(recordArray2[2]));
             br.setHits(Long.parseLong(recordArray2[3]));
             br.setSingles(Long.parseLong(recordArray2[4]));
@@ -138,31 +139,32 @@ public class BackController {
             br.setRunsBattedIn(Long.parseLong(recordArray2[9]));
             br.setBasesOnBalls(Long.parseLong(recordArray2[10]));
             br.setStrikeOuts(Long.parseLong(recordArray2[11]));
-            
+
             //System.out.println(recordArray2[12] + "!!!!!!!!!!!");
             //System.out.println(recordArray2[12].trim() + "@@@@@@@@@@@@");
-            
+
             br.setStolenBases(Long.parseLong(recordArray2[12].trim()));
 
             this.recordService.createBatterRecordByDate(br);
         }
-        
+
         return "redirect:/back/createRecordView.do";
     }
-    
+
     @RequestMapping(value = "/createPitcherRecordByDate")
-    public String createPitcherRecordByDate(ModelMap map, Long year, Long month, Long date, Long gameSeq, String recordStr) {
+    public String createPitcherRecordByDate(ModelMap map, Long year, Long month, Long date, Long gameSeq, Long season, String recordStr) {
         String[] recordArray1 = recordStr.split("\\n");
-        
+
         for (int i = 0; i < recordArray1.length; i++) {
             String rec = recordArray1[i];
             String[] recordArray2 = rec.split("\\t");
-            
+
             PitcherRecord pr = new PitcherRecord();
             pr.setYear(year);
             pr.setMonth(month);
             pr.setDate(date);
             pr.setGameSeq(gameSeq);
+            pr.setSeason(season);
             pr.setName(recordArray2[0].trim());
             pr.setWins(Long.parseLong(recordArray2[1]));
             pr.setLosses(Long.parseLong(recordArray2[2]));
@@ -180,7 +182,43 @@ public class BackController {
 
             this.recordService.createPitcherRecordByDate(pr);
         }
-        
+
+        return "redirect:/back/createRecordView.do";
+    }
+
+    @RequestMapping(value = "/createTeamRecordByDate")
+    public String createTeamRecordByDate(ModelMap map, Long season, String recordStr) {
+        String[] recordArray1 = recordStr.split("\\n");
+
+        for (int i = 0; i < recordArray1.length; i++) {
+            String rec = recordArray1[i];
+
+
+
+            String[] recordArray2 = rec.split("\\t");
+
+            TeamRecord tr = new TeamRecord();
+            tr.setSeason(season);
+            String date = recordArray2[0].trim();
+
+            System.out.println(date + "!!!!!!!");
+
+            tr.setYear(Long.parseLong(date.split("-")[0].trim()));
+            tr.setMonth(Long.parseLong(date.split("-")[1]));
+            tr.setDate(Long.parseLong(date.split("-")[2]));
+
+            tr.setGameSeq(Long.parseLong(recordArray2[1]));
+
+            tr.setBallPark(recordArray2[2]);
+            tr.setType(recordArray2[3]);
+            tr.setHomeAway(recordArray2[4]);
+            tr.setOpponent(recordArray2[5]);
+            tr.setResult(recordArray2[6].trim());
+
+
+            this.recordService.createTeamRecordByDate(tr);
+        }
+
         return "redirect:/back/createRecordView.do";
     }
 }

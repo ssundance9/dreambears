@@ -2,55 +2,57 @@ package com.dream.bears.model;
 
 public class BatterRecord {
     private long year;
-    
+
     private long month;
-    
+
     private long date;
-    
+
     private long gameSeq;
-    
+
+    private long season;
+
     private String name;
-    
+
     private long games;
-    
+
     private long plateAppears;
-    
+
     private long atBats;
-    
+
     private long hits;
-    
+
     private long singles;
-    
+
     private long doubles;
-    
+
     private long triples;
-    
+
     private long homeRuns;
-    
+
     private long runsScored;
-    
+
     private long runsBattedIn;
-    
+
     private long basesOnBalls;
-    
+
     private long strikeOuts;
-    
+
     private long stolenBases;
-    
+
     private double battingAvg;
-    
+
     private double onBasePcg;
-    
+
     private double sluggingPcg;
-    
+
     private double onBasePlusSlugging;
-    
+
     private double runsCreated;
-    
+
     private double runsCreated21;
-    
+
     private double grossProductionAvg;
-    
+
     private double battingAvgOnBIP;
 
     public long getYear() {
@@ -60,7 +62,7 @@ public class BatterRecord {
     public void setYear(long year) {
         this.year = year;
     }
-    
+
     public long getMonth() {
         return month;
     }
@@ -79,6 +81,14 @@ public class BatterRecord {
 
     public long getGameSeq() {
         return gameSeq;
+    }
+
+    public long getSeason() {
+        return season;
+    }
+
+    public void setSeason(long season) {
+        this.season = season;
     }
 
     public void setGameSeq(long gameSeq) {
@@ -205,7 +215,7 @@ public class BatterRecord {
             return 0D;
         }
     }
-    
+
     public double getOnBasePcg() {
         if (this.plateAppears > 0) {
             double a = ((double) (this.hits + this.basesOnBalls)) / ((double) this.plateAppears) * 1000D;
@@ -219,17 +229,17 @@ public class BatterRecord {
         double a = ((double) (this.singles + 2 * this.doubles + 3 * this.triples + 4 * this.homeRuns)) / ((double) this.atBats) * 1000D;
         return Math.round(a) / 1000D;
     }
-    
+
     public double getOnBasePlusSlugging() {
         double a = (getOnBasePcg() + getSluggingPcg()) * 1000D;
         return Math.round(a) / 1000D;
     }
-    
+
     public double getRunsCreated() {
         double a = ((double) (this.hits + this.basesOnBalls)) * (getSluggingPcg() * ((double) this.atBats) + 0.52D * ((double) this.stolenBases) + 0.26D * ((double) this.basesOnBalls)) / ((double) this.plateAppears) * 1000D;
         return Math.round(a) / 1000D;
     }
-    
+
     public double getRunsCreated21() {
         if (this.atBats - this.hits > 0) {
             double a = getRunsCreated() / ((double) this.atBats - this.hits) * 21D * 1000D;
@@ -238,12 +248,12 @@ public class BatterRecord {
             return 0D;
         }
     }
-    
+
     public double getGrossProductionAvg() {
         double a = (getOnBasePcg() * 1.8D + getSluggingPcg()) / 4D * 1000D;
         return Math.round(a) / 1000D;
     }
-    
+
     public double getBattingAvgOnBIP() {
         double a = ((double) this.hits - this.homeRuns) / ((double) this.atBats - this.homeRuns - this.strikeOuts) * 1000D;
         return Math.round(a) / 1000D;

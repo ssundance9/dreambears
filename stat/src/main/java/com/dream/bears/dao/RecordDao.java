@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.dream.bears.model.BatterRecord;
 import com.dream.bears.model.PitcherRecord;
+import com.dream.bears.model.TeamRecord;
 
 @Repository
 public class RecordDao {
@@ -25,6 +26,14 @@ public class RecordDao {
 
     public void deletePitcherRecord(PitcherRecord pr) {
         this.sqlSessionTemplate.delete("RecordDao.deletePitcherRecord", pr);
+    }
+
+    public void insertTeamRecord(TeamRecord tr) {
+        this.sqlSessionTemplate.insert("RecordDao.insertTeamRecord", tr);
+    }
+
+    public void deleteTeamRecord(TeamRecord tr) {
+        this.sqlSessionTemplate.delete("RecordDao.deleteTeamRecord", tr);
     }
 
 }

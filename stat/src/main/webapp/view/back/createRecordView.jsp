@@ -54,6 +54,8 @@
 </form>
 <br/>
 <form name="createForm" action="/back/createBatterRecordByDate.do" method="post">
+    <input type="text" name="season" value=""/>시즌
+    <br/>
     <input type="text" name="year" value=""/>년 <input type="text" name="month" value=""/>월 <input type="text" name="date" value=""/>일 <input type="text" name="gameSeq" value="1"/>gameSeq
     <br/>
     경기별타자기록<textarea name="recordStr" rows="20" cols="100"></textarea>
@@ -61,9 +63,18 @@
 </form>
 <br/>
 <form name="createForm" action="/back/createPitcherRecordByDate.do" method="post">
+    <input type="text" name="season" value=""/>시즌
+    <br/>
     <input type="text" name="year" value=""/>년 <input type="text" name="month" value=""/>월 <input type="text" name="date" value=""/>일 <input type="text" name="gameSeq" value="1"/>gameSeq
     <br/>
     경기별투수기록<textarea name="recordStr" rows="20" cols="100"></textarea>
+    <button type="submit">입력</button>
+</form>
+<br/>
+<form name="createForm" action="/back/createTeamRecordByDate.do" method="post">
+    <input type="text" name="season" value=""/>시즌
+    <br/>
+    팀기록<textarea name="recordStr" rows="20" cols="100"></textarea>
     <button type="submit">입력</button>
 </form>
 <br/>

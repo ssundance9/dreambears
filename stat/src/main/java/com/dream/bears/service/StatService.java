@@ -19,8 +19,13 @@ public interface StatService {
 
     List<TeamRecord> getTeamTotalStat();
 
-    List<BatterRecord> getHittingStatByYear(Long year);
+
+
+
+    List<BatterRecord> getHittingStatBySeason(Long season);
 
     List<BatterRecord> getHittingStatByGame(BatterRecord br);
+
+    List<TeamRecord> getTeamStatsBySeason(long season);
 
 }

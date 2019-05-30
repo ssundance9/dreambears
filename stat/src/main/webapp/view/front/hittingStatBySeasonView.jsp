@@ -33,8 +33,10 @@ jQuery(function($) {
     	active: 3
     });
 
-	$("#selectBatterYear").selectmenu();
-	$("#btnChart").button();
+	$("#selectSeason").selectmenu({
+		width : 250
+	});
+	$("#btnChart, #btnGame").button();
 
     $("#table").DataTable({
     	paging: false,
@@ -48,8 +50,8 @@ jQuery(function($) {
         ]
     });
 
-    $("#selectBatterYear").on("change", function() {
-    	document.location.href = "/hittingStatView.do?year=" + $(this).val();
+    $("#selectSeason").on("change", function() {
+    	document.location.href = "/hittingStatView.do?season=" + $(this).val();
     });
 
     $("#goBatters").on("click", function() {
@@ -62,10 +64,6 @@ jQuery(function($) {
 
     $("#goTeam").on("click", function() {
     	document.location.href = "/teamStatsView.do";
-    });
-
-    $("#goHittingGame").on("click", function() {
-    	document.location.href = "/hittingStatByGameView.do?year=2019&month=1&date=5&gameSeq=1";
     });
 
     $("#title").on("click", function() {
@@ -102,14 +100,18 @@ jQuery(function($) {
 
 			drawGraph(data);
 
-			$(this).text("테이블");
+			$(this).text("그래프");
 			$("#divTable").hide();
 			$("#divChart").show();
 		} else {
-			$(this).text("그래프");
+			$(this).text("테이블");
 			$("#divTable").show();
 			$("#divChart").html("").hide();
 		}
+    });
+
+    $("#btnGame").on("click", function() {
+    	document.location.href = "/hittingStatByGameView.do?season=" + $("#selectSeason").val();
     });
 
     /* $("#btnFilter").on("click", function() {
@@ -169,8 +171,7 @@ function drawGraph(data) {
         <li><a href="#tabs-1" id="goBatters">타격</a></li>
         <li><a href="#tabs-2" id="goPitchers">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
-        <li><a href="#tabs-4">타격(연도별)</a></li>
-        <li><a href="#tabs-5" id="goHittingGame">타격(게임별)</a></li>
+        <li><a href="#tabs-4">타격G</a></li>
     </ul>
     <div id="tabs-1">
     </div>
@@ -179,7 +180,9 @@ function drawGraph(data) {
     <div id="tabs-3">
     </div>
     <div id="tabs-4">
-        <select name="year" id="selectBatterYear">
+        <button id="btnGame">시즌</button>
+
+        <select name="year" id="selectSeason">
             <%-- <option value="9999" <c:if test="${param.year == 9999}">selected="selected"</c:if>>통산</option> --%>
             <option value="2019" <c:if test="${param.year == 2019}">selected="selected"</c:if>>2019</option>
             <%-- <option value="2018" <c:if test="${param.year == 2018}">selected="selected"</c:if>>2018</option>
@@ -192,10 +195,10 @@ function drawGraph(data) {
             <option value="2011" <c:if test="${param.year == 2011}">selected="selected"</c:if>>2011</option>
             <option value="2010" <c:if test="${param.year == 2010}">selected="selected"</c:if>>2010</option>
             <option value="2009" <c:if test="${param.year == 2009}">selected="selected"</c:if>>2009</option> --%>
-
         </select>
+        <br/><br/>
+        <button id="btnChart">테이블</button>
 
-        <button id="btnChart">차트</button>
 
         <%-- <c:if test="${year == '9999' }">
             <c:if test="${pa == '200' }">

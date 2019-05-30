@@ -37,7 +37,7 @@ public class StatServiceImpl implements StatService {
     final String pitcher = "pitcher";
     final String team = "team";
     final String DB_NAME = "myinstance";
-    final String DB_USER = "root";
+    final String DB_USER = "postgres";
     final String DB_PASS = "j147258369!";
     final String CLOUD_SQL_CONNECTION_NAME = "dreambears:asia-northeast2:myinstance";
 
@@ -647,37 +647,44 @@ public class StatServiceImpl implements StatService {
         return list;
     }
 
-    public void test() {
-     // The configuration object specifies behaviors for the connection pool.
-        HikariConfig config = new HikariConfig();
-
-        // Configure which instance and what database user to connect with.
-        config.setJdbcUrl(String.format("jdbc:postgresql:///%s", DB_NAME));
-        config.setUsername(DB_USER); // e.g. "root", "postgres"
-        config.setPassword(DB_PASS); // e.g. "my-password"
-
-        // For Java users, the Cloud SQL JDBC Socket Factory can provide authenticated connections.
-        // See https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for details.
-        config.addDataSourceProperty("socketFactory", "com.google.cloud.sql.postgres.SocketFactory");
-        config.addDataSourceProperty("cloudSqlInstance", CLOUD_SQL_CONNECTION_NAME);
-
-        // ... Specify additional connection properties here.
-
-        // ...
-
-        // Initialize the connection pool using the configuration object.
-        DataSource pool = new HikariDataSource(config);
-    }
+    /*
+     * public void test() { // The configuration object specifies behaviors for the
+     * connection pool. HikariConfig config = new HikariConfig();
+     *
+     * // Configure which instance and what database user to connect with.
+     * config.setJdbcUrl(String.format("jdbc:postgresql:///%s", DB_NAME));
+     * config.setUsername(DB_USER); // e.g. "root", "postgres"
+     * config.setPassword(DB_PASS); // e.g. "my-password"
+     *
+     * // For Java users, the Cloud SQL JDBC Socket Factory can provide
+     * authenticated connections. // See
+     * https://github.com/GoogleCloudPlatform/cloud-sql-jdbc-socket-factory for
+     * details. config.addDataSourceProperty("socketFactory",
+     * "com.google.cloud.sql.postgres.SocketFactory");
+     * config.addDataSourceProperty("cloudSqlInstance", CLOUD_SQL_CONNECTION_NAME);
+     *
+     * // ... Specify additional connection properties here.
+     *
+     * // ...
+     *
+     * // Initialize the connection pool using the configuration object. DataSource
+     * pool = new HikariDataSource(config); }
+     */
 
     @Override
-    public List<BatterRecord> getHittingStatByYear(Long year) {
+    public List<BatterRecord> getHittingStatBySeason(Long season) {
 
-        return this.statDao.selectHittingStatByYear(year);
+        return this.statDao.selectHittingStatBySeason(season);
     }
 
     @Override
     public List<BatterRecord> getHittingStatByGame(BatterRecord br) {
         return this.statDao.selectHittingStatByGame(br);
+    }
+
+    @Override
+    public List<TeamRecord> getTeamStatsBySeason(long season) {
+        return this.statDao.selectTeamStatsBySeason(season);
     }
 
 

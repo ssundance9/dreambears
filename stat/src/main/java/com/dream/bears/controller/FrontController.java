@@ -108,15 +108,34 @@ public class FrontController {
         return "/front/pitcherStatsView";
     }
 
-    @RequestMapping(value = "/hittingStatByYearView")
-    public String hittingStatByYearView(ModelMap map, Long year) {
-        map.addAttribute("list", this.statService.getHittingStatByYear(year));
+    @RequestMapping(value = "/hittingStatBySeasonView")
+    public String hittingStatBySeasonView(ModelMap map, Long season) {
+        map.addAttribute("list", this.statService.getHittingStatBySeason(season));
 
-        return "/front/hittingStatByYearView";
+        return "/front/hittingStatBySeasonView";
     }
 
     @RequestMapping(value = "/hittingStatByGameView")
-    public String hittingStatByDateGame(ModelMap map, BatterRecord br) {
+    public String hittingStatByDateGame(ModelMap map, BatterRecord br, Long seq) {
+        List<TeamRecord> gameList = this.statService.getTeamStatsBySeason(br.getSeason());
+        map.addAttribute("gameList", gameList);
+
+        if (seq == null) {
+            br.setYear(gameList.get(0).getYear());
+            br.setMonth(gameList.get(0).getMonth());
+            br.setDate(gameList.get(0).getDate());
+            br.setGameSeq(gameList.get(0).getGameSeq());
+        } else {
+            for (TeamRecord tr : gameList) {
+                if (tr.getSeq() == seq) {
+                    br.setYear(tr.getYear());
+                    br.setMonth(tr.getMonth());
+                    br.setDate(tr.getDate());
+                    br.setGameSeq(tr.getGameSeq());
+                }
+            }
+        }
+
         map.addAttribute("list", this.statService.getHittingStatByGame(br));
 
         return "/front/hittingStatByGameView";

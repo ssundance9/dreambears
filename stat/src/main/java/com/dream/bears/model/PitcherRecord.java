@@ -2,47 +2,49 @@ package com.dream.bears.model;
 
 public class PitcherRecord {
     private long year;
-    
+
     private long month;
-    
+
     private long date;
-    
+
     private long gameSeq;
-    
+
+    private long season;
+
     private String name;
-    
+
     private long wins;
-    
+
     private long losses;
-    
+
     private long saves;
-    
+
     private double inningsPitched;
-    
+
     private long plateAppears;
-    
+
     private long atBats;
-    
+
     private long hits;
-    
+
     private long homeRuns;
-    
+
     private long sacrificeFly;
-    
+
     private long basesOnBalls;
-    
+
     private long strikeOuts;
-    
+
     private long runs;
-    
+
     private long earnedRuns;
-    
+
     private double earnedRunAvg;
-    
+
     private double battingAvg;
-    
+
     private double walksHitsIP;
-    
+
     private double fieldingIndependentPitching;
 
     public long getYear() {
@@ -75,6 +77,14 @@ public class PitcherRecord {
 
     public void setGameSeq(long gameSeq) {
         this.gameSeq = gameSeq;
+    }
+
+    public long getSeason() {
+        return season;
+    }
+
+    public void setSeason(long season) {
+        this.season = season;
     }
 
     public String getName() {
@@ -216,7 +226,7 @@ public class PitcherRecord {
             return 0D;
         }
     }
-    
+
     public double getFieldingIndependentPitching() {
         if (this.inningsPitched > 0) {
             double a = ((13 * ((double) this.homeRuns) + 3 * ((double) this.basesOnBalls) - 2 * ((double) this.strikeOuts)) / ((double) this.inningsPitched) + 3.2D) * 100D;

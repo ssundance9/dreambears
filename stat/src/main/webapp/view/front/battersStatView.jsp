@@ -54,13 +54,13 @@ jQuery(function($) {
     	document.location.href = "/teamStatsView.do";
     });
 
-    $("#goHittingYear").on("click", function() {
-    	document.location.href = "/hittingStatByYearView.do?year=2019";
+    $("#goHittingSeason").on("click", function() {
+    	document.location.href = "/hittingStatBySeasonView.do?season=2019";
     });
 
-    $("#goHittingGame").on("click", function() {
+    /* $("#goHittingGame").on("click", function() {
     	document.location.href = "/hittingStatByGameView.do?year=2019&month=1&date=5&gameSeq=1";
-    });
+    }); */
 
     $("#title").on("click", function() {
     	document.location.href = "/battersStatView.do";
@@ -91,8 +91,7 @@ jQuery(function($) {
         <li><a href="#tabs-1">타격</a></li>
         <li><a href="#tabs-2" id="goPitchers">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
-        <li><a href="#tabs-4" id="goHittingYear">타격(연도별)</a></li>
-        <li><a href="#tabs-5" id="goHittingGame">타격(게임별)</a></li>
+        <li><a href="#tabs-4" id="goHittingSeason">타격G</a></li>
     </ul>
     <div id="tabs-1">
         연도
