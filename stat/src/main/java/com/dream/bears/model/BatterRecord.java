@@ -15,6 +15,8 @@ public class BatterRecord {
 
     private long games;
 
+    private long battingOrder;
+
     private long plateAppears;
 
     private long atBats;
@@ -109,6 +111,14 @@ public class BatterRecord {
 
     public void setGames(long games) {
         this.games = games;
+    }
+
+    public long getBattingOrder() {
+        return battingOrder;
+    }
+
+    public void setBattingOrder(long battingOrder) {
+        this.battingOrder = battingOrder;
     }
 
     public long getPlateAppears() {

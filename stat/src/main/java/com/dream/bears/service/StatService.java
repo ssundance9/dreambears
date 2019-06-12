@@ -28,4 +28,12 @@ public interface StatService {
 
     List<TeamRecord> getTeamStatsBySeason(long season);
 
+    List<List<BatterRecord>> getAllHittingStatBySeason(Long season);
+
+    List<PitcherRecord> getPitchingStatBySeason(Long season);
+
+    List<PitcherRecord> getPitchingStatByGame(PitcherRecord pr);
+
+    List<BatterRecord> getHittingStatByPerson(BatterRecord br);
+
 }

@@ -13,6 +13,10 @@ public class PitcherRecord {
 
     private String name;
 
+    private long games;
+
+    private long gameStarted;
+
     private long wins;
 
     private long losses;
@@ -93,6 +97,22 @@ public class PitcherRecord {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public long getGames() {
+        return games;
+    }
+
+    public void setGames(long games) {
+        this.games = games;
+    }
+
+    public long getGameStarted() {
+        return gameStarted;
+    }
+
+    public void setGameStarted(long gameStarted) {
+        this.gameStarted = gameStarted;
     }
 
     public long getWins() {

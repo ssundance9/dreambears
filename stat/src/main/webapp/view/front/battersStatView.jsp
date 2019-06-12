@@ -30,55 +30,60 @@ tr {
 jQuery(function($) {
     $("#tabs").tabs();
 
+    $("#selectBatterYear").selectmenu({
+        width : 100
+        , change : function(event, ui) {
+            document.location.href = "/battersStatView.do?year=" + $(this).val();
+        }
+    });
+
+    $("#btnFilter").button();
+
     $("#table").DataTable({
-    	paging: false,
-    	info: false,
-    	searching: false,
-    	fixedColumns: true,
-    	scrollCollapse: true,
-    	scrollX: true,
-    	columnDefs: [
+        paging: false,
+        info: false,
+        searching: false,
+        fixedColumns: true,
+        scrollCollapse: true,
+        scrollX: true,
+        columnDefs: [
             { width: 60, targets: 0 }
         ]
     });
 
-    $("#selectBatterYear").on("change", function() {
-    	document.location.href = "/battersStatView.do?year=" + $(this).val();
-    });
-
     $("#goPitchers").on("click", function() {
-    	document.location.href = "/pitchersStatView.do";
+        document.location.href = "/pitchersStatView.do";
     });
 
     $("#goTeam").on("click", function() {
-    	document.location.href = "/teamStatsView.do";
+        document.location.href = "/teamStatsView.do";
     });
 
     $("#goHittingSeason").on("click", function() {
-    	document.location.href = "/hittingStatBySeasonView.do?season=2019";
+        document.location.href = "/hittingStatBySeasonView.do?season=2019";
     });
 
-    /* $("#goHittingGame").on("click", function() {
-    	document.location.href = "/hittingStatByGameView.do?year=2019&month=1&date=5&gameSeq=1";
-    }); */
+    $("#goPitchingSeason").on("click", function() {
+        document.location.href = "/pitchingStatBySeasonView.do?season=2019";
+    });
 
     $("#title").on("click", function() {
-    	document.location.href = "/battersStatView.do";
+        document.location.href = "/battersStatView.do";
     });
 
     $("#btnFilter").on("click", function() {
-    	var pa = "${pa}";
-    	if (pa == "200") {
-    		document.location.href = "/battersStatView.do?year=9999";
-    	} else {
-    		document.location.href = "/battersStatView.do?year=9999&pa=200";
-    	}
+        var pa = "${pa}";
+        if (pa == "200") {
+            document.location.href = "/battersStatView.do?year=9999";
+        } else {
+            document.location.href = "/battersStatView.do?year=9999&pa=200";
+        }
     });
 
     adjustTable($("#tabs-1"));
 
     $(window).resize(function() {
-    	adjustTable($("#tabs-1"));
+        adjustTable($("#tabs-1"));
     });
 })
 </script>
@@ -91,7 +96,8 @@ jQuery(function($) {
         <li><a href="#tabs-1">타격</a></li>
         <li><a href="#tabs-2" id="goPitchers">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
-        <li><a href="#tabs-4" id="goHittingSeason">타격G</a></li>
+        <li><a href="#tabs-4" id="goHittingSeason">타격(2019)</a></li>
+        <li><a href="#tabs-5" id="goPitchingSeason">투구(2019)</a></li>
     </ul>
     <div id="tabs-1">
         연도
@@ -321,14 +327,6 @@ jQuery(function($) {
                 </tr>
             </tfoot>
         </table>
-    </div>
-    <div id="tabs-2">
-    </div>
-    <div id="tabs-3">
-    </div>
-    <div id="tabs-4">
-    </div>
-    <div id="tabs-5">
     </div>
 </div>
 <br/>

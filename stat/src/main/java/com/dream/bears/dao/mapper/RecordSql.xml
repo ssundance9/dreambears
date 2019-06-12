@@ -10,6 +10,7 @@
             , GAME_SEQ
             , SEASON
             , NAME
+            , BATTING_ORDER
             , PLATE_APPEARS
             , AT_BATS
             , HITS
@@ -31,6 +32,7 @@
             , #{gameSeq}
             , #{season}
             , #{name}
+            , #{battingOrder}
             , #{plateAppears}
             , #{atBats}
             , #{hits}
@@ -64,6 +66,7 @@
             , GAME_SEQ
             , SEASON
             , NAME
+            , GAME_STARTED
             , WINS
             , LOSSES
             , SAVES
@@ -86,6 +89,7 @@
             , #{gameSeq}
             , #{season}
             , #{name}
+            , #{gameStarted}
             , #{wins}
             , #{losses}
             , #{saves}

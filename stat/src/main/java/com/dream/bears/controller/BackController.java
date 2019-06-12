@@ -18,7 +18,7 @@ public class BackController {
 
     @RequestMapping(value = "/createRecordView")
     public String createRecordView(ModelMap map) {
-    	return "/back/createRecordView";
+        return "/back/createRecordView";
     }
 
     @RequestMapping(value = "/createBatterRecord")
@@ -125,25 +125,28 @@ public class BackController {
             br.setGameSeq(gameSeq);
             br.setSeason(season);
             br.setName(recordArray2[0].trim());
-            br.setPlateAppears(Long.parseLong(recordArray2[1]));
+
+            br.setBattingOrder(Long.parseLong(recordArray2[1]));
+
+            br.setPlateAppears(Long.parseLong(recordArray2[2]));
 
             //System.out.println(recordArray2[2] + "!!!!!!!!!!!");
 
-            br.setAtBats(Long.parseLong(recordArray2[2]));
-            br.setHits(Long.parseLong(recordArray2[3]));
-            br.setSingles(Long.parseLong(recordArray2[4]));
-            br.setDoubles(Long.parseLong(recordArray2[5]));
-            br.setTriples(Long.parseLong(recordArray2[6]));
-            br.setHomeRuns(Long.parseLong(recordArray2[7]));
-            br.setRunsScored(Long.parseLong(recordArray2[8]));
-            br.setRunsBattedIn(Long.parseLong(recordArray2[9]));
-            br.setBasesOnBalls(Long.parseLong(recordArray2[10]));
-            br.setStrikeOuts(Long.parseLong(recordArray2[11]));
+            br.setAtBats(Long.parseLong(recordArray2[3]));
+            br.setHits(Long.parseLong(recordArray2[4]));
+            br.setSingles(Long.parseLong(recordArray2[5]));
+            br.setDoubles(Long.parseLong(recordArray2[6]));
+            br.setTriples(Long.parseLong(recordArray2[7]));
+            br.setHomeRuns(Long.parseLong(recordArray2[8]));
+            br.setRunsScored(Long.parseLong(recordArray2[9]));
+            br.setRunsBattedIn(Long.parseLong(recordArray2[10]));
+            br.setBasesOnBalls(Long.parseLong(recordArray2[11]));
+            br.setStrikeOuts(Long.parseLong(recordArray2[12]));
 
             //System.out.println(recordArray2[12] + "!!!!!!!!!!!");
             //System.out.println(recordArray2[12].trim() + "@@@@@@@@@@@@");
 
-            br.setStolenBases(Long.parseLong(recordArray2[12].trim()));
+            br.setStolenBases(Long.parseLong(recordArray2[13].trim()));
 
             this.recordService.createBatterRecordByDate(br);
         }
@@ -166,19 +169,20 @@ public class BackController {
             pr.setGameSeq(gameSeq);
             pr.setSeason(season);
             pr.setName(recordArray2[0].trim());
-            pr.setWins(Long.parseLong(recordArray2[1]));
-            pr.setLosses(Long.parseLong(recordArray2[2]));
-            pr.setSaves(Long.parseLong(recordArray2[3]));
-            pr.setInningsPitched(Double.parseDouble(recordArray2[4]));
-            pr.setPlateAppears(Long.parseLong(recordArray2[5]));
-            pr.setAtBats(Long.parseLong(recordArray2[6]));
-            pr.setHits(Long.parseLong(recordArray2[7]));
-            pr.setHomeRuns(Long.parseLong(recordArray2[8]));
-            pr.setSacrificeFly(Long.parseLong(recordArray2[9]));
-            pr.setBasesOnBalls(Long.parseLong(recordArray2[10]));
-            pr.setStrikeOuts(Long.parseLong(recordArray2[11]));
-            pr.setRuns(Long.parseLong(recordArray2[12]));
-            pr.setEarnedRuns(Long.parseLong(recordArray2[13].trim()));
+            pr.setGameStarted(Long.parseLong(recordArray2[1]));
+            pr.setWins(Long.parseLong(recordArray2[2]));
+            pr.setLosses(Long.parseLong(recordArray2[3]));
+            pr.setSaves(Long.parseLong(recordArray2[4]));
+            pr.setInningsPitched(Double.parseDouble(recordArray2[5]));
+            pr.setPlateAppears(Long.parseLong(recordArray2[6]));
+            pr.setAtBats(Long.parseLong(recordArray2[7]));
+            pr.setHits(Long.parseLong(recordArray2[8]));
+            pr.setHomeRuns(Long.parseLong(recordArray2[9]));
+            pr.setSacrificeFly(Long.parseLong(recordArray2[10]));
+            pr.setBasesOnBalls(Long.parseLong(recordArray2[11]));
+            pr.setStrikeOuts(Long.parseLong(recordArray2[12]));
+            pr.setRuns(Long.parseLong(recordArray2[13]));
+            pr.setEarnedRuns(Long.parseLong(recordArray2[14].trim()));
 
             this.recordService.createPitcherRecordByDate(pr);
         }

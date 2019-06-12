@@ -28,51 +28,61 @@ tr {
 <script type="text/javascript">
 jQuery(function($) {
     $("#tabs").tabs({
-    	active: 1
+        active: 1
     });
-    
+
+    $("#selectPitcherYear").selectmenu({
+        width : 100
+        , change : function(event, ui) {
+            document.location.href="/pitchersStatView.do?year=" + $(this).val();
+        }
+    });
+
     $("#table").DataTable({
-    	paging: false,
-    	info: false,
-    	searching: false,
-    	fixedColumns: true,
-    	scrollCollapse: true,
-    	scrollX: true,
-    	columnDefs: [
+        paging: false,
+        info: false,
+        searching: false,
+        fixedColumns: true,
+        scrollCollapse: true,
+        scrollX: true,
+        columnDefs: [
             { width: 60, targets: 0 }
         ]
     });
-    
-	
-    $("#selectPitcherYear").on("change", function() {
-    	document.location.href="/pitchersStatView.do?year=" + $(this).val();
-    });
-    
+
     $("#goBatters").on("click", function() {
-    	document.location.href = "/battersStatView.do";
+        document.location.href = "/battersStatView.do";
     });
-    
+
     $("#goTeam").on("click", function() {
-    	document.location.href = "/teamStatsView.do";
+        document.location.href = "/teamStatsView.do";
     });
-    
+
+    $("#goHittingSeason").on("click", function() {
+        document.location.href = "/hittingStatBySeasonView.do?season=2019";
+    });
+
+    $("#goPitchingSeason").on("click", function() {
+        document.location.href = "/pitchingStatBySeasonView.do?season=2019";
+    });
+
     $("#title").on("click", function() {
-    	document.location.href = "/battersStatView.do";
+        document.location.href = "/battersStatView.do";
     });
-    
+
     $("#btnFilter").on("click", function() {
-    	var ip = "${ip}";
-    	if (ip == "40") {
-    		document.location.href = "/pitchersStatView.do?year=9999";
-    	} else {
-    		document.location.href = "/pitchersStatView.do?year=9999&ip=40";
-    	}
+        var ip = "${ip}";
+        if (ip == "40") {
+            document.location.href = "/pitchersStatView.do?year=9999";
+        } else {
+            document.location.href = "/pitchersStatView.do?year=9999&ip=40";
+        }
     });
-    
-	adjustTable($("#tabs-2"));
-    
+
+    adjustTable($("#tabs-2"));
+
     $(window).resize(function() {
-    	adjustTable($("#tabs-2"));
+        adjustTable($("#tabs-2"));
     });
 })
 </script>
@@ -85,6 +95,8 @@ jQuery(function($) {
         <li><a href="#tabs-1" id="goBatters">타격</a></li>
         <li><a href="#tabs-2">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
+        <li><a href="#tabs-4" id="goHittingSeason">타격(2019)</a></li>
+        <li><a href="#tabs-5" id="goPitchingSeason">투구(2019)</a></li>
     </ul>
     <div id="tabs-1">
     </div>
@@ -104,7 +116,7 @@ jQuery(function($) {
             <option value="2010" <c:if test="${year == 2010}">selected="selected"</c:if>>2010</option>
             <option value="2009" <c:if test="${year == 2009}">selected="selected"</c:if>>2009</option>
         </select>
-        
+
         <c:if test="${year == '9999' }">
             <c:if test="${ip == '40' }">
                 <button id="btnFilter">모든 이닝</button>
@@ -113,7 +125,7 @@ jQuery(function($) {
                 <button id="btnFilter">40이닝 이상</button>
             </c:if>
         </c:if>
-        
+
         <br/>
         <br/>
         <table id="table" class="display">

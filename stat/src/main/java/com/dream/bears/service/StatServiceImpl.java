@@ -673,7 +673,6 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public List<BatterRecord> getHittingStatBySeason(Long season) {
-
         return this.statDao.selectHittingStatBySeason(season);
     }
 
@@ -685,6 +684,37 @@ public class StatServiceImpl implements StatService {
     @Override
     public List<TeamRecord> getTeamStatsBySeason(long season) {
         return this.statDao.selectTeamStatsBySeason(season);
+    }
+
+    @Override
+    public List<List<BatterRecord>> getAllHittingStatBySeason(Long season) {
+        List<List<BatterRecord>> result = new ArrayList<List<BatterRecord>>();
+
+        List<String> batterNames = this.statDao.selectBatterNamesBySeason(season);
+
+        for(String name : batterNames) {
+            List<BatterRecord> record = this.statDao.selectHittingStatByPersonGame(name, season);
+
+            result.add(record);
+        }
+
+        return result;
+    }
+
+    @Override
+    public List<PitcherRecord> getPitchingStatBySeason(Long season) {
+        return this.statDao.selectPitchingStatBySeason(season);
+    }
+
+    @Override
+    public List<PitcherRecord> getPitchingStatByGame(PitcherRecord pr) {
+        return this.statDao.selectPitchingStatByGame(pr);
+    }
+
+    @Override
+    public List<BatterRecord> getHittingStatByPerson(BatterRecord br) {
+
+        return this.statDao.selectHittingStatByPerson(br);
     }
 
 

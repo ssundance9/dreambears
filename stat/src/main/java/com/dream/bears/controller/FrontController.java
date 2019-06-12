@@ -8,8 +8,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.dream.bears.model.BatterRecord;
+import com.dream.bears.model.PitcherRecord;
 import com.dream.bears.model.TeamRecord;
 import com.dream.bears.service.StatService;
+import com.google.common.collect.Lists;
 
 @Controller
 public class FrontController {
@@ -141,4 +143,58 @@ public class FrontController {
         return "/front/hittingStatByGameView";
     }
 
+    @RequestMapping(value= "/hittingStatByPersonView")
+    public String hittingStatByPersonView(ModelMap map, BatterRecord br) {
+
+        List<BatterRecord> list = this.statService.getHittingStatByPerson(br);
+
+        map.addAttribute("list", list);
+        map.addAttribute("reverseList", Lists.reverse(list));
+
+        return "/front/hittingStatByPersonView";
+    }
+
+    @RequestMapping(value = "/hittingStatByGameWithGraph")
+    public String hittingStatByGameWithGraph(ModelMap map, Long season) {
+        List<TeamRecord> gameList = this.statService.getTeamStatsBySeason(season);
+        map.addAttribute("gameList", gameList);
+
+        //List<List<BatterRecord>> list = this.statService.getAllHittingStatBySeason(season);
+        //map.addAttribute("list", list);
+
+        return "/front/hittingStatByGameWithGraph";
+    }
+
+    @RequestMapping(value = "/pitchingStatBySeasonView")
+    public String pitchingStatBySeasonView(ModelMap map, Long season) {
+        map.addAttribute("list", this.statService.getPitchingStatBySeason(season));
+
+        return "/front/pitchingStatBySeasonView";
+    }
+
+    @RequestMapping(value = "/pitchingStatByGameView")
+    public String pitchingStatByGameView(ModelMap map, PitcherRecord pr, Long seq) {
+        List<TeamRecord> gameList = this.statService.getTeamStatsBySeason(pr.getSeason());
+        map.addAttribute("gameList", gameList);
+
+        if (seq == null) {
+            pr.setYear(gameList.get(0).getYear());
+            pr.setMonth(gameList.get(0).getMonth());
+            pr.setDate(gameList.get(0).getDate());
+            pr.setGameSeq(gameList.get(0).getGameSeq());
+        } else {
+            for (TeamRecord tr : gameList) {
+                if (tr.getSeq() == seq) {
+                    pr.setYear(tr.getYear());
+                    pr.setMonth(tr.getMonth());
+                    pr.setDate(tr.getDate());
+                    pr.setGameSeq(tr.getGameSeq());
+                }
+            }
+        }
+
+        map.addAttribute("list", this.statService.getPitchingStatByGame(pr));
+
+        return "/front/pitchingStatByGameView";
+    }
 }
