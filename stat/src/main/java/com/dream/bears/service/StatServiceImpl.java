@@ -713,8 +713,17 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public List<BatterRecord> getHittingStatByPerson(BatterRecord br) {
-
         return this.statDao.selectHittingStatByPerson(br);
+    }
+
+    @Override
+    public List<BatterRecord> getPitchingStatByPerson(PitcherRecord pr) {
+        return this.statDao.selectPitchingStatByPerson(pr);
+    }
+
+    @Override
+    public List<TeamRecord> getTeamStatBySeason(Long season) {
+        return this.statDao.selectTeamStatsBySeason(season);
     }
 
 

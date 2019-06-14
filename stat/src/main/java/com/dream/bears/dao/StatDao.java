@@ -50,4 +50,8 @@ public class StatDao {
     public List<BatterRecord> selectHittingStatByPerson(BatterRecord br) {
         return this.sqlSessionTemplate.selectList("StatDao.selectHittingStatByPerson", br);
     }
+
+    public List<BatterRecord> selectPitchingStatByPerson(PitcherRecord pr) {
+        return this.sqlSessionTemplate.selectList("StatDao.selectPitchingStatByPerson", pr);
+    }
 }

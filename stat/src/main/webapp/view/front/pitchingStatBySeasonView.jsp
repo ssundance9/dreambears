@@ -73,6 +73,14 @@ jQuery(function($) {
         document.location.href = "/hittingStatBySeasonView.do?season=2019";
     });
 
+    $("#goPitchingSeason").on("click", function() {
+        document.location.href = "/pitchingStatBySeasonView.do?season=2019";
+    });
+
+    $("#goTeamSeason").on("click", function() {
+        document.location.href = "/teamStatBySeasonView.do?season=2019";
+    });
+
     $("#title").on("click", function() {
         document.location.href = "/battersStatView.do";
     });
@@ -170,7 +178,8 @@ function drawGraph(data) {
         <li><a href="#tabs-2" id="goPitchers">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
         <li><a href="#tabs-4" id="goHittingSeason">타격(2019)</a></li>
-        <li><a href="#tabs-5">투구(2019)</a></li>
+        <li><a href="#tabs-5" id="goPitchingSeason">투구(2019)</a></li>
+        <li><a href="#tabs-6" id="goTeamSeason">팀(2019)</a></li>
     </ul>
     <div id="tabs-5">
         <button id="btnGame">시즌</button>
@@ -224,7 +233,7 @@ function drawGraph(data) {
                     <c:if test="${pitcher.name != 'TOTAL' }">
                     <tr>
                         <th style="text-align: center;">
-                            <a href="/pitcherStatsView.do?name=${pitcher.name }">${pitcher.name }</a>
+                            <a href="/pitchingStatByPersonView.do?season=${pitcher.season }&name=${pitcher.name }">${pitcher.name }</a>
                         </th>
                         <td>
                             ${pitcher.games }
@@ -292,10 +301,10 @@ function drawGraph(data) {
                     <c:if test="${pitcher.name == 'TOTAL' }">
                     <tr>
                         <th>
-                            <a href="/pitcherStatsView.do?name=${pitcher.name }">${pitcher.name }</a>
+                            TOTAL
                         </th>
                         <td>
-                            -
+                            ${pitcher.games }
                         </td>
                         <td>
                             -

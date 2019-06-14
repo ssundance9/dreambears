@@ -67,6 +67,10 @@ jQuery(function($) {
         document.location.href = "/pitchingStatBySeasonView.do?season=2019";
     });
 
+    $("#goTeamSeason").on("click", function() {
+        document.location.href = "/teamStatBySeasonView.do?season=2019";
+    });
+
     $("#title").on("click", function() {
         document.location.href = "/battersStatView.do";
     });
@@ -98,6 +102,7 @@ jQuery(function($) {
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
         <li><a href="#tabs-4" id="goHittingSeason">타격(2019)</a></li>
         <li><a href="#tabs-5" id="goPitchingSeason">투구(2019)</a></li>
+        <li><a href="#tabs-6" id="goTeamSeason">팀(2019)</a></li>
     </ul>
     <div id="tabs-1">
         연도

@@ -26,6 +26,8 @@ public interface StatService {
 
     List<BatterRecord> getHittingStatByGame(BatterRecord br);
 
+    List<BatterRecord> getHittingStatByPerson(BatterRecord br);
+
     List<TeamRecord> getTeamStatsBySeason(long season);
 
     List<List<BatterRecord>> getAllHittingStatBySeason(Long season);
@@ -34,6 +36,8 @@ public interface StatService {
 
     List<PitcherRecord> getPitchingStatByGame(PitcherRecord pr);
 
-    List<BatterRecord> getHittingStatByPerson(BatterRecord br);
+    List<BatterRecord> getPitchingStatByPerson(PitcherRecord pr);
+
+    List<TeamRecord> getTeamStatBySeason(Long season);
 
 }

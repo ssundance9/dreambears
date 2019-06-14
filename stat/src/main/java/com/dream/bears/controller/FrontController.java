@@ -197,4 +197,25 @@ public class FrontController {
 
         return "/front/pitchingStatByGameView";
     }
+
+    @RequestMapping(value= "/pitchingStatByPersonView")
+    public String pitchingStatByPersonView(ModelMap map, PitcherRecord pr) {
+
+        List<BatterRecord> list = this.statService.getPitchingStatByPerson(pr);
+
+        map.addAttribute("list", list);
+        map.addAttribute("reverseList", Lists.reverse(list));
+
+        return "/front/pitchingStatByPersonView";
+    }
+
+    @RequestMapping(value= "/teamStatBySeasonView")
+    public String teamStatBySeasonView(ModelMap map, Long season) {
+
+        List<TeamRecord> list = this.statService.getTeamStatBySeason(season);
+
+        map.addAttribute("list", list);
+
+        return "/front/teamStatBySeasonView";
+    }
 }

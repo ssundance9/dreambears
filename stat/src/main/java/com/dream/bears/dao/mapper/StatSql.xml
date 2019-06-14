@@ -3,7 +3,7 @@
 <mapper namespace="StatDao">
 
     <select id="selectHittingStatBySeason" resultType="com.dream.bears.model.BatterRecord">
-        SELECT A.*
+        SELECT C.*
         FROM    (
             SELECT  SEASON
                     , NAME
@@ -25,27 +25,31 @@
             WHERE   SEASON = #{season}
             GROUP BY SEASON, NAME
             UNION ALL
-            SELECT  SEASON
+            SELECT  A.SEASON
                     , 'TOTAL'
                     , 'TOTAL'
-                    , 1
-                    , SUM(PLATE_APPEARS) AS PLATE_APPEARS
-                    , SUM(AT_BATS) AS AT_BATS
-                    , SUM(HITS) AS HITS
-                    , SUM(SINGLES) AS SINGLES
-                    , SUM(DOUBLES) AS DOUBLES
-                    , SUM(TRIPLES) AS TRIPLES
-                    , SUM(HOME_RUNS) AS HOME_RUNS
-                    , SUM(RUNS_SCORED) AS RUNS_SCORED
-                    , SUM(RUNS_BATTED_IN) AS RUNS_BATTED_IN
-                    , SUM(BASES_ON_BALLS) AS BASES_ON_BALLS
-                    , SUM(STRIKE_OUTS) AS STRIKE_OUTS
-                    , SUM(STOLEN_BASES) AS  STOLEN_BASES
-            FROM    BATTER_RECORD
-            WHERE   SEASON = #{season}
-            GROUP BY SEASON
-        ) A
-        ORDER BY A.NAME2 ASC
+                    , (SELECT COUNT(B.*) FROM (
+                        SELECT SEASON, YEAR, MONTH, DATE, GAME_SEQ
+                        FROM BATTER_RECORD
+                        WHERE SEASON = A.SEASON
+                        GROUP BY SEASON, YEAR, MONTH, DATE, GAME_SEQ) B) AS GAMES
+                    , SUM(A.PLATE_APPEARS) AS PLATE_APPEARS
+                    , SUM(A.AT_BATS) AS AT_BATS
+                    , SUM(A.HITS) AS HITS
+                    , SUM(A.SINGLES) AS SINGLES
+                    , SUM(A.DOUBLES) AS DOUBLES
+                    , SUM(A.TRIPLES) AS TRIPLES
+                    , SUM(A.HOME_RUNS) AS HOME_RUNS
+                    , SUM(A.RUNS_SCORED) AS RUNS_SCORED
+                    , SUM(A.RUNS_BATTED_IN) AS RUNS_BATTED_IN
+                    , SUM(A.BASES_ON_BALLS) AS BASES_ON_BALLS
+                    , SUM(A.STRIKE_OUTS) AS STRIKE_OUTS
+                    , SUM(A.STOLEN_BASES) AS  STOLEN_BASES
+            FROM    BATTER_RECORD A
+            WHERE   A.SEASON = #{season}
+            GROUP BY A.SEASON
+        ) C
+        ORDER BY C.NAME2 ASC
     </select>
 
     <select id="selectHittingStatByGame" resultType="com.dream.bears.model.BatterRecord">
@@ -96,13 +100,6 @@
         ORDER BY A.BATTING_ORDER ASC
     </select>
 
-    <select id="selectTeamStatsBySeason" resultType="com.dream.bears.model.TeamRecord">
-        SELECT  *
-        FROM    TEAM_RECORD
-        WHERE   SEASON = #{season}
-        ORDER BY SEQ DESC
-    </select>
-
     <select id="selectBatterNamesBySeason" resultType="java.lang.String">
         SELECT  NAME
         FROM    BATTER_RECORD
@@ -119,7 +116,7 @@
     </select>
 
     <select id="selectPitchingStatBySeason" resultType="com.dream.bears.model.PitcherRecord">
-        SELECT A.*
+        SELECT C.*
         FROM    (
             SELECT  SEASON
                     , NAME
@@ -143,35 +140,40 @@
             WHERE   SEASON = #{season}
             GROUP BY SEASON, NAME
             UNION ALL
-            SELECT  SEASON
+            SELECT  A.SEASON
                     , 'TOTAL'
                     , 'TOTAL'
+                    , (SELECT COUNT(B.*) FROM (
+                        SELECT SEASON, YEAR, MONTH, DATE, GAME_SEQ
+                        FROM PITCHER_RECORD
+                        WHERE SEASON = A.SEASON
+                        GROUP BY SEASON, YEAR, MONTH, DATE, GAME_SEQ) B) AS GAMES
                     , 0
-                    , 0
-                    , SUM(WINS) AS WINS
-                    , SUM(LOSSES) AS LOSSES
-                    , SUM(SAVES) AS SAVES
-                    , SUM(INNINGS_PITCHED) AS INNINGS_PITCHED
-                    , SUM(PLATE_APPEARS) AS PLATE_APPEARS
-                    , SUM(AT_BATS) AS AT_BATS
-                    , SUM(HITS) AS HITS
-                    , SUM(HOME_RUNS) AS HOME_RUNS
-                    , SUM(SACRIFICE_FLY) AS SACRIFICE_FLY
-                    , SUM(BASES_ON_BALLS) AS BASES_ON_BALLS
-                    , SUM(STRIKE_OUTS) AS STRIKE_OUTS
-                    , SUM(RUNS) AS  RUNS
-                    , SUM(EARNED_RUNS) AS EARNED_RUNS
-            FROM    PITCHER_RECORD
-            WHERE   SEASON = #{season}
-            GROUP BY SEASON
-        ) A
-        ORDER BY A.NAME2
+                    , SUM(A.WINS) AS WINS
+                    , SUM(A.LOSSES) AS LOSSES
+                    , SUM(A.SAVES) AS SAVES
+                    , SUM(A.INNINGS_PITCHED) AS INNINGS_PITCHED
+                    , SUM(A.PLATE_APPEARS) AS PLATE_APPEARS
+                    , SUM(A.AT_BATS) AS AT_BATS
+                    , SUM(A.HITS) AS HITS
+                    , SUM(A.HOME_RUNS) AS HOME_RUNS
+                    , SUM(A.SACRIFICE_FLY) AS SACRIFICE_FLY
+                    , SUM(A.BASES_ON_BALLS) AS BASES_ON_BALLS
+                    , SUM(A.STRIKE_OUTS) AS STRIKE_OUTS
+                    , SUM(A.RUNS) AS  RUNS
+                    , SUM(A.EARNED_RUNS) AS EARNED_RUNS
+            FROM    PITCHER_RECORD A
+            WHERE   A.SEASON = #{season}
+            GROUP BY A.SEASON
+        ) C
+        ORDER BY C.NAME2 ASC
     </select>
 
     <select id="selectPitchingStatByGame" resultType="com.dream.bears.model.PitcherRecord">
         SELECT A.*
         FROM    (
-            SELECT  NAME
+            SELECT  SEASON
+                    , NAME
                     , GAME_STARTED
                     , WINS
                     , LOSSES
@@ -192,7 +194,8 @@
             AND     DATE = #{date}
             AND     GAME_SEQ = #{gameSeq}
             UNION ALL
-            SELECT  'TOTAL'
+            SELECT  9999
+                    , 'TOTAL'
                     , 0
                     , SUM(WINS) AS WINS
                     , SUM(LOSSES) AS LOSSES
@@ -219,7 +222,6 @@
     <select id="selectHittingStatByPerson" resultType="com.dream.bears.model.BatterRecord">
         SELECT  SEASON
                 , NAME
-                , SUBSTRING(NAME, 1, 3) NAME2
                 , YEAR
                 , MONTH
                 , DATE
@@ -240,7 +242,88 @@
         FROM    BATTER_RECORD
         WHERE   SEASON = #{season}
         AND     NAME = #{name}
+        UNION ALL
+        SELECT  0000
+                , 'TOTAL'
+                , 0000
+                , 00
+                , 00
+                , 0
+                , 0
+                , SUM(PLATE_APPEARS) AS PLATE_APPEARS
+                , SUM(AT_BATS) AS AT_BATS
+                , SUM(HITS) AS HITS
+                , SUM(SINGLES) AS SINGLES
+                , SUM(DOUBLES) AS DOUBLES
+                , SUM(TRIPLES) AS TRIPLES
+                , SUM(HOME_RUNS) AS HOME_RUNS
+                , SUM(RUNS_SCORED) AS RUNS_SCORED
+                , SUM(RUNS_BATTED_IN) AS RUNS_BATTED_IN
+                , SUM(BASES_ON_BALLS) AS BASES_ON_BALLS
+                , SUM(STRIKE_OUTS) AS STRIKE_OUTS
+                , SUM(STOLEN_BASES) AS STOLEN_BASES
+        FROM    BATTER_RECORD
+        WHERE   SEASON = #{season}
+        AND     NAME = #{name}
         ORDER BY MONTH DESC, DATE DESC, GAME_SEQ DESC
+    </select>
+
+    <select id="selectPitchingStatByPerson" resultType="com.dream.bears.model.PitcherRecord">
+        SELECT  SEASON
+                , NAME
+                , YEAR
+                , MONTH
+                , DATE
+                , GAME_SEQ
+                , GAME_STARTED
+                , WINS
+                , LOSSES
+                , SAVES
+                , INNINGS_PITCHED
+                , PLATE_APPEARS
+                , AT_BATS
+                , HITS
+                , HOME_RUNS
+                , SACRIFICE_FLY
+                , BASES_ON_BALLS
+                , STRIKE_OUTS
+                , RUNS
+                , EARNED_RUNS
+        FROM    PITCHER_RECORD
+        WHERE   SEASON = #{season}
+        AND     NAME = #{name}
+        UNION ALL
+        SELECT  0000
+                , 'TOTAL'
+                , 0000
+                , 00
+                , 00
+                , 0
+                , SUM(GAME_STARTED) AS GAME_STARTED
+                , SUM(WINS) AS WINS
+                , SUM(LOSSES) AS LOSSES
+                , SUM(SAVES) AS SAVES
+                , SUM(INNINGS_PITCHED) AS INNINGS_PITCHED
+                , SUM(PLATE_APPEARS) AS PLATE_APPEARS
+                , SUM(AT_BATS) AS AT_BATS
+                , SUM(HITS) AS HITS
+                , SUM(HOME_RUNS) AS HOME_RUNS
+                , SUM(SACRIFICE_FLY) AS SACRIFICE_FLY
+                , SUM(BASES_ON_BALLS) AS BASES_ON_BALLS
+                , SUM(STRIKE_OUTS) AS STRIKE_OUTS
+                , SUM(RUNS) AS RUNS
+                , SUM(EARNED_RUNS) AS EARNED_RUNS
+        FROM    PITCHER_RECORD
+        WHERE   SEASON = #{season}
+        AND     NAME = #{name}
+        ORDER BY MONTH DESC, DATE DESC, GAME_SEQ DESC
+    </select>
+
+    <select id="selectTeamStatsBySeason" resultType="com.dream.bears.model.TeamRecord">
+        SELECT  *
+        FROM    TEAM_RECORD
+        WHERE   SEASON = #{season}
+        ORDER BY SEQ DESC
     </select>
 
 </mapper>

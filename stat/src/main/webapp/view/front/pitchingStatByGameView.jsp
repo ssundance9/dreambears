@@ -78,6 +78,14 @@ jQuery(function($) {
         document.location.href = "/hittingStatBySeasonView.do?season=2019";
     });
 
+    $("#goPitchingSeason").on("click", function() {
+        document.location.href = "/pitchingStatBySeasonView.do?season=2019";
+    });
+
+    $("#goTeamSeason").on("click", function() {
+        document.location.href = "/teamStatBySeasonView.do?season=2019";
+    });
+
     $("#title").on("click", function() {
         document.location.href = "/battersStatView.do";
     });
@@ -122,8 +130,8 @@ jQuery(function($) {
         }
     });
 
-    $("#btnGame").on("click", function() {
-        document.location.href = "/pitchingStatByGameView.do?season=" + $("#selectSeason").val();
+    $("#btnSeason").on("click", function() {
+        document.location.href = "/pitchingStatBySeasonView.do?season=" + $("#selectGameDate option:selected").data("season");
     });
 
     adjustTable($("#tabs-5"));
@@ -175,13 +183,16 @@ function drawGraph(data) {
         <li><a href="#tabs-2" id="goPitchers">투구</a></li>
         <li><a href="#tabs-3" id="goTeam">팀</a></li>
         <li><a href="#tabs-4" id="goHittingSeason">타격(2019)</a></li>
-        <li><a href="#tabs-5">투구(2019)</a></li>
+        <li><a href="#tabs-5" id="goPitchingSeason">투구(2019)</a></li>
+        <li><a href="#tabs-6" id="goTeamSeason">팀(2019)</a></li>
     </ul>
     <div id="tabs-5">
         <button id="btnSeason">게임</button>
         <select name="gameDate" id="selectGameDate">
             <c:forEach var="game" items="${gameList }">
-            <option data-season="${game.season }" value="${game.seq }" <c:if test="${game.seq == param.seq }">selected="selected"</c:if>>${game.year }-${game.month }-${game.date } vs ${game.opponent }</option>
+            <option data-season="${game.season }" value="${game.seq }" <c:if test="${game.seq == param.seq }">selected="selected"</c:if>>
+                ${game.year }-<fmt:formatNumber value="${game.month }" minIntegerDigits="2" />-<fmt:formatNumber value="${game.date }" minIntegerDigits="2" /> vs ${game.opponent }
+            </option>
             </c:forEach>
             <%-- <option data-season="${param.season }" value="graph">그래프</option> --%>
         </select>
@@ -219,7 +230,7 @@ function drawGraph(data) {
                     <c:if test="${pitcher.name != 'TOTAL' }">
                     <tr>
                         <th style="text-align: center;">
-                            <a href="/pitcherStatsView.do?name=${pitcher.name }">${pitcher.name }</a>
+                            <a href="/pitchingStatByPersonView.do?season=${pitcher.season }&name=${pitcher.name }">${pitcher.name }</a>
                         </th>
                         <td>
                             <c:if test="${pitcher.gameStarted == 1 }">S</c:if>
@@ -285,7 +296,7 @@ function drawGraph(data) {
                     <c:if test="${pitcher.name == 'TOTAL' }">
                     <tr>
                         <th>
-                            <a href="/pitcherStatsView.do?name=${pitcher.name }">${pitcher.name }</a>
+                            TOTAL
                         </th>
                         <td>
                             -
