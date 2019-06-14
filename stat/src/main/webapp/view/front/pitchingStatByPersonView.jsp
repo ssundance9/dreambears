@@ -232,7 +232,7 @@ function drawGraph(data, stat) {
 </head>
 <body>
 
-<h2 id="title">DREAM BEARS STATS</h2>
+<h2><span id="title">DREAM BEARS STATS</span> - ${param.name }</h2>
 <div id="tabs">
     <ul>
         <li><a href="#tabs-1" id="goBatters">타격</a></li>
